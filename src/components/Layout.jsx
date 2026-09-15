@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 import Navbar from './Navbar';
 import CustomCursor from './CustomCursor';
 import usePageTransitions from '../hooks/usePageTransitions';
-import { useLenis, resetLenis } from '../hooks/useLenis';
+import { useLenis, resetLenis, stopLenis } from '../hooks/useLenis';
 
 import ThreeStarfield from './ThreeStarfield';
 import ThreeBackground from './ThreeBackground';
@@ -29,7 +29,11 @@ export default function Layout({ isPreloaderDone }) {
     if (document.documentElement) document.documentElement.scrollTop = 0;
     if (document.body) document.body.scrollTop = 0;
     resetLenis();
-  }, [location.pathname]);
+    // The home page is a single screen and must not scroll. A stopped Lenis
+    // ignores wheel and touch, and its lenis-stopped class hides overflow;
+    // the section transitions run on the GSAP Observer and keep working.
+    if (isHeroPage) stopLenis();
+  }, [location.pathname, isHeroPage]);
 
   // Page entry animation and ScrollTrigger re-initialization when route changes
   useEffect(() => {
@@ -187,7 +191,7 @@ export default function Layout({ isPreloaderDone }) {
       <main className="page-transition-wrapper">
         <Outlet />
         
-        {hasNext && nextRoute && (
+        {hasNext && nextRoute && !isHeroPage && (
           <button
             type="button"
             onClick={() => (transitionTo ? transitionTo('next') : navigate(nextRoute))}

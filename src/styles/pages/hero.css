@@ -1,6 +1,7 @@
 /* Hero Section */
 header.hero-container {
   min-height: 100vh;
+  min-height: 100dvh; /* the visible viewport on mobile, so nothing overflows */
   display: flex;
   flex-direction: column;
   justify-content: center;
