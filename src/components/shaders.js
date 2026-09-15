@@ -31,6 +31,7 @@ uniform float uStarBright;
 uniform float uSkyFloor;
 uniform float uRotSpeed;
 uniform vec2  uJitter;
+uniform int   uOctaves;
 
 #define RS 1.0
 
@@ -63,7 +64,8 @@ float vnoise(vec3 x){
 float fbm(vec3 p){
   float v = 0.0;
   float a = 0.5;
-  for(int i=0;i<3;i++){
+  for(int i=0;i<5;i++){
+    if(i >= uOctaves) break;
     v += a*vnoise(p);
     p = p*2.03 + 11.3;
     a *= 0.5;
@@ -353,25 +355,23 @@ export const ACCUM_FRAG = /* glsl */`
 precision highp float;
 
 varying vec2 vUv;
-uniform sampler2D tDiffuse;
-uniform sampler2D tHistory;
-uniform float uBlend;
+uniform sampler2D tCurrent;   // this frame's raymarch: small buffer, jittered
+uniform sampler2D tHistory;   // accumulated image at canvas resolution
+uniform vec2  uLowRes;        // small buffer size in texels
+uniform vec2  uJitter;        // sub-pixel offset the raymarch used, in texels
+uniform float uSharp;         // falloff of the sample weight with distance
+uniform float uBlend;         // weight of a sample landing dead centre
+uniform float uReset;         // 1 replaces the history (resize, fast camera)
 
 void main(){
-  vec3 cur = texture2D(tDiffuse, vUv).rgb;
+  // Where this history pixel falls in the small buffer, undoing the jitter.
+  vec2 q = vUv*uLowRes - uJitter;
+  vec3 cur = texture2D(tCurrent, q/uLowRes).rgb;
   vec3 hist = texture2D(tHistory, vUv).rgb;
-  gl_FragColor = vec4(mix(hist, cur, uBlend), 1.0);
-}
-`;
-
-export const COPY_FRAG = /* glsl */`
-precision highp float;
-
-varying vec2 vUv;
-uniform sampler2D tDiffuse;
-
-void main(){
-  gl_FragColor = texture2D(tDiffuse, vUv);
+  // A sample counts more the closer it landed to this pixel's centre.
+  vec2 d = fract(q) - 0.5;
+  float w = max(uBlend*exp(-dot(d, d)*uSharp), uReset);
+  gl_FragColor = vec4(mix(hist, cur, w), 1.0);
 }
 `;
 

@@ -1,70 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { Pass, FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
-import { RAY_VERT, RAY_FRAG, COMPOSITE_VERT, COMPOSITE_FRAG, ACCUM_FRAG, COPY_FRAG } from './shaders.js';
-
-// Blends each new, sub-pixel jittered raymarch frame into a running history.
-// One sample per pixel in a small buffer shows aliased edges; averaged over a
-// few frames it converges to a supersampled image at no extra raymarch cost.
-class AccumulatePass extends Pass {
-  constructor(rtType) {
-    super();
-    this.history = new THREE.WebGLRenderTarget(2, 2, { type: rtType, depthBuffer: false });
-    this.blend = 1;
-    this.resetPending = true;
-    this.material = new THREE.ShaderMaterial({
-      vertexShader: COMPOSITE_VERT,
-      fragmentShader: ACCUM_FRAG,
-      uniforms: {
-        tDiffuse: { value: null },
-        tHistory: { value: this.history.texture },
-        uBlend: { value: 1 },
-      },
-      depthTest: false,
-      depthWrite: false,
-    });
-    this.copyMaterial = new THREE.ShaderMaterial({
-      vertexShader: COMPOSITE_VERT,
-      fragmentShader: COPY_FRAG,
-      uniforms: { tDiffuse: { value: null } },
-      depthTest: false,
-      depthWrite: false,
-    });
-    this.fsQuad = new FullScreenQuad(this.material);
-  }
-
-  setSize(width, height) {
-    this.history.setSize(width, height);
-    this.resetPending = true; // stale history at the old size
-  }
-
-  render(renderer, writeBuffer, readBuffer) {
-    this.material.uniforms.tDiffuse.value = readBuffer.texture;
-    this.material.uniforms.uBlend.value = this.resetPending ? 1 : this.blend;
-    this.resetPending = false;
-    this.fsQuad.material = this.material;
-    renderer.setRenderTarget(writeBuffer);
-    this.fsQuad.render(renderer);
-
-    // The blended result becomes next frame's history.
-    this.copyMaterial.uniforms.tDiffuse.value = writeBuffer.texture;
-    this.fsQuad.material = this.copyMaterial;
-    renderer.setRenderTarget(this.history);
-    this.fsQuad.render(renderer);
-  }
-
-  dispose() {
-    this.history.dispose();
-    this.material.dispose();
-    this.copyMaterial.dispose();
-    this.fsQuad.dispose();
-  }
-}
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
+import { RAY_VERT, RAY_FRAG, COMPOSITE_VERT, COMPOSITE_FRAG, ACCUM_FRAG } from './shaders.js';
 
 // Halton low-discrepancy sequence: evenly spread sub-pixel offsets.
 const halton = (index, base) => {
@@ -96,7 +35,7 @@ export default function ThreeBackground({ isHeroPage = true }) {
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    let renderer, composer, bloomPass, compositePass, controls;
+    let renderer, bloomPass, controls;
     let animationFrameId;
     let lastRenderMs = 0;
     const cpuCores = navigator.hardwareConcurrency || 8;
@@ -199,6 +138,7 @@ export default function ThreeBackground({ isHeroPage = true }) {
       uSkyFloor: { value: FIXED_PARAMS.uSkyFloor },
       uRotSpeed: { value: FIXED_PARAMS.uRotSpeed },
       uJitter: { value: new THREE.Vector2(0, 0) },
+      uOctaves: { value: 3 },
     };
 
     const fsMat = new THREE.ShaderMaterial({
@@ -227,42 +167,63 @@ export default function ThreeBackground({ isHeroPage = true }) {
     controls.zoomSpeed = 0.8;
     controls.enabled = false; // Disabled initially in normal browsing mode
 
-    // Post-processing pipeline (Bloom + Tone Mapping + Grain)
+    // Render pipeline: raymarch into a small buffer, accumulate it into a
+    // history at canvas resolution, then composite (tone map, vignette, grain).
     const rtType = halfFloatOK ? THREE.HalfFloatType : THREE.UnsignedByteType;
-    const rt = new THREE.WebGLRenderTarget(2, 2, { type: rtType, depthBuffer: false });
-    composer = new EffectComposer(renderer, rt);
-    composer.setPixelRatio(1); // buffers are sized explicitly in applyRenderScale
-    composer.addPass(new RenderPass(fsScene, fsCam));
+    const rtOptions = { type: rtType, depthBuffer: false };
+    const rtRay = new THREE.WebGLRenderTarget(2, 2, rtOptions);
+    let histRead = new THREE.WebGLRenderTarget(2, 2, rtOptions);
+    let histWrite = new THREE.WebGLRenderTarget(2, 2, rtOptions);
+    let histW = 2;
+    let histH = 2;
+    let historyReset = true;
 
-    const accumPass = new AccumulatePass(rtType);
-    composer.addPass(accumPass);
+    // Temporal super-resolution: the raymarch samples a different sub-pixel
+    // offset every frame, and each history pixel takes the new sample with a
+    // weight that falls off with the sample's distance from the pixel centre.
+    // Over a few frames the full-resolution history converges to a
+    // supersampled image while the raymarch only ever renders the small buffer.
+    const accumMaterial = new THREE.ShaderMaterial({
+      vertexShader: COMPOSITE_VERT,
+      fragmentShader: ACCUM_FRAG,
+      uniforms: {
+        tCurrent: { value: null },
+        tHistory: { value: null },
+        uLowRes: { value: new THREE.Vector2(2, 2) },
+        uJitter: { value: new THREE.Vector2(0, 0) },
+        uSharp: { value: 1 },
+        uBlend: { value: 0.4 },
+        uReset: { value: 1 },
+      },
+      depthTest: false,
+      depthWrite: false,
+    });
+    const accumQuad = new FullScreenQuad(accumMaterial);
 
+    // Bloom costs several extra fullscreen passes. Reserve it for the optional
+    // Orbit Mode, and run it on the small buffer: a blur needs no resolution.
     bloomPass = new UnrealBloomPass(
       new THREE.Vector2(2, 2),
       FIXED_PARAMS.bloomStrength,
       FIXED_PARAMS.bloomRadius,
       FIXED_PARAMS.bloomThreshold
     );
-    // Bloom costs several extra fullscreen passes. Reserve it for the optional
-    // Orbit Mode, where it is worth the GPU work.
-    bloomPass.enabled = false;
-    composer.addPass(bloomPass);
 
-    compositePass = new ShaderPass(
-      new THREE.ShaderMaterial({
-        vertexShader: COMPOSITE_VERT,
-        fragmentShader: COMPOSITE_FRAG,
-        uniforms: {
-          tDiffuse: { value: null },
-          uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-          uTime: { value: 0 },
-          uVignette: { value: FIXED_PARAMS.vignette },
-          uGrain: { value: FIXED_PARAMS.grain },
-          uCA: { value: FIXED_PARAMS.ca },
-        },
-      })
-    );
-    composer.addPass(compositePass);
+    const compositeMaterial = new THREE.ShaderMaterial({
+      vertexShader: COMPOSITE_VERT,
+      fragmentShader: COMPOSITE_FRAG,
+      uniforms: {
+        tDiffuse: { value: null },
+        uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+        uTime: { value: 0 },
+        uVignette: { value: FIXED_PARAMS.vignette },
+        uGrain: { value: FIXED_PARAMS.grain },
+        uCA: { value: FIXED_PARAMS.ca },
+      },
+      depthTest: false,
+      depthWrite: false,
+    });
+    const compositeQuad = new FullScreenQuad(compositeMaterial);
 
     // Cursor Responsiveness (Smooth Damped LERP Parallax in normal mode)
     let mouseX = 0;
@@ -362,8 +323,19 @@ export default function ThreeBackground({ isHeroPage = true }) {
       renderer.getDrawingBufferSize(_dbSize);
       const rw = Math.max(1, Math.round(_dbSize.x * renderScale));
       const rh = Math.max(1, Math.round(_dbSize.y * renderScale));
-      composer.setSize(rw, rh);
+      rtRay.setSize(rw, rh);
+      bloomPass.setSize(rw, rh);
       uniforms.uRes.value.set(rw, rh);
+      accumMaterial.uniforms.uLowRes.value.set(rw, rh);
+      // Sample weight falls off over ~0.7 history pixels, expressed in texels
+      // of the small buffer. The history itself lives in canvas space, so it
+      // stays valid when only the buffer size changes.
+      const sigma = 0.7 * rw / histW;
+      accumMaterial.uniforms.uSharp.value = 1 / (2 * sigma * sigma);
+      // The finest disk detail only shows once the buffer is large enough to
+      // resolve it; below that the extra noise octaves are wasted work.
+      if (renderScale >= 0.5) uniforms.uOctaves.value = 5;
+      else if (renderScale < 0.4) uniforms.uOctaves.value = 3;
     };
 
     const setRenderScale = (next) => {
@@ -387,7 +359,16 @@ export default function ThreeBackground({ isHeroPage = true }) {
       camera.updateProjectionMatrix();
 
       renderer.getDrawingBufferSize(_dbSize);
-      compositePass.uniforms.uRes.value.copy(_dbSize);
+      compositeMaterial.uniforms.uRes.value.copy(_dbSize);
+
+      // History at canvas resolution, capped so a 4K screen does not pay for
+      // an accumulate pass four times the size of a 1080p one.
+      const histScale = Math.min(1, 1920 / Math.max(_dbSize.x, _dbSize.y));
+      histW = Math.max(1, Math.round(_dbSize.x * histScale));
+      histH = Math.max(1, Math.round(_dbSize.y * histScale));
+      histRead.setSize(histW, histH);
+      histWrite.setSize(histW, histH);
+      historyReset = true;
       applyRenderScale();
     };
 
@@ -397,6 +378,35 @@ export default function ThreeBackground({ isHeroPage = true }) {
     const initTime = performance.now();
     const prevCamPos = camera.position.clone();
     let jitterIndex = 0;
+    let camMove = 0;
+
+    const renderFrame = () => {
+      // 1. Raymarch into the small buffer (bloom, in Orbit Mode, blends into it)
+      renderer.setRenderTarget(rtRay);
+      renderer.render(fsScene, fsCam);
+      if (halfFloatOK && isInteractiveRef.current) {
+        bloomPass.render(renderer, null, rtRay);
+      }
+
+      // 2. Accumulate into the history (ping-pong). A fast camera move replaces
+      //    the history instead of blending, so an orbit drag never ghosts.
+      accumMaterial.uniforms.tCurrent.value = rtRay.texture;
+      accumMaterial.uniforms.tHistory.value = histRead.texture;
+      accumMaterial.uniforms.uJitter.value.copy(uniforms.uJitter.value);
+      accumMaterial.uniforms.uReset.value = historyReset ? 1 : Math.min(1, camMove * 25);
+      historyReset = false;
+      renderer.setRenderTarget(histWrite);
+      accumQuad.render(renderer);
+
+      // 3. Composite the history onto the canvas
+      compositeMaterial.uniforms.tDiffuse.value = histWrite.texture;
+      renderer.setRenderTarget(null);
+      compositeQuad.render(renderer);
+
+      const swap = histRead;
+      histRead = histWrite;
+      histWrite = swap;
+    };
 
     // Render Animation Loop
     const tick = () => {
@@ -442,24 +452,21 @@ export default function ThreeBackground({ isHeroPage = true }) {
         camera.lookAt(0, 0, 0);
       }
 
-      // Temporal accumulation: jitter the sample and weight the new frame by
-      // how far the camera moved, so a fast orbit drag never ghosts while a
-      // still or slowly gliding view converges to a clean supersampled image.
-      jitterIndex = (jitterIndex % 16) + 1;
+      // Sub-pixel jitter for the temporal accumulation (see renderFrame)
+      jitterIndex = (jitterIndex % 32) + 1;
       uniforms.uJitter.value.set(halton(jitterIndex, 2) - 0.5, halton(jitterIndex, 3) - 0.5);
-      accumPass.blend = Math.min(1, 0.2 + camera.position.distanceTo(prevCamPos) * 25);
+      camMove = camera.position.distanceTo(prevCamPos);
       prevCamPos.copy(camera.position);
 
       // Sync uniforms
       uniforms.uTime.value = elapsedTime;
       uniforms.uCamPos.value.copy(camera.position);
       uniforms.uCamTarget.value.set(0, 0, 0);
-      compositePass.uniforms.uTime.value = elapsedTime;
+      compositeMaterial.uniforms.uTime.value = elapsedTime;
 
       // Render smoothly synced with display VSync
       if (now - lastRenderMs >= 16) {
         const delta = now - lastRenderMs;
-        bloomPass.enabled = halfFloatOK && isInteractiveRef.current;
 
         if (timerExt) {
           // One query in flight at a time; its result is read back on a later
@@ -474,10 +481,10 @@ export default function ThreeBackground({ isHeroPage = true }) {
           if (!pendingQuery) {
             pendingQuery = gl.createQuery();
             gl.beginQuery(timerExt.TIME_ELAPSED_EXT, pendingQuery);
-            composer.render();
+            renderFrame();
             gl.endQuery(timerExt.TIME_ELAPSED_EXT);
           } else {
-            composer.render();
+            renderFrame();
           }
           if (gpuSamples.length >= 20) {
             // The median ignores the odd outlier (shader compile, a stall).
@@ -491,7 +498,7 @@ export default function ThreeBackground({ isHeroPage = true }) {
             }
           }
         } else {
-          composer.render();
+          renderFrame();
           if (delta < 250) {
             slowAccum += delta;
             slowCount++;
@@ -538,7 +545,14 @@ export default function ThreeBackground({ isHeroPage = true }) {
       window.cancelAnimationFrame(animationFrameId);
       if (pendingQuery) gl.deleteQuery(pendingQuery);
       if (controls) controls.dispose();
-      if (composer) composer.dispose();
+      rtRay.dispose();
+      histRead.dispose();
+      histWrite.dispose();
+      bloomPass.dispose();
+      accumMaterial.dispose();
+      compositeMaterial.dispose();
+      accumQuad.dispose();
+      compositeQuad.dispose();
       if (renderer) renderer.dispose();
     };
   }, []);
