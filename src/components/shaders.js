@@ -30,6 +30,7 @@ uniform float uDiskBright;
 uniform float uStarBright;
 uniform float uSkyFloor;
 uniform float uRotSpeed;
+uniform vec2  uJitter;
 
 #define RS 1.0
 
@@ -62,7 +63,7 @@ float vnoise(vec3 x){
 float fbm(vec3 p){
   float v = 0.0;
   float a = 0.5;
-  for(int i=0;i<5;i++){
+  for(int i=0;i<3;i++){
     v += a*vnoise(p);
     p = p*2.03 + 11.3;
     a *= 0.5;
@@ -212,10 +213,12 @@ bool diskCross(vec3 a, vec3 b, vec3 rayDir, inout vec3 col, inout float trans){
 
   float ang = atan(q.z, q.x);
   float x = max(qr, 3.001);
-  float flux = max(pow(x/3.0, -3.0)*(1.0 - sqrt(3.0/x)), 0.0);
-  float temp = pow(flux*10.0, 0.25);
+  float x3 = x/3.0;
+  float flux = max((1.0 - sqrt(3.0/x))/(x3*x3*x3), 0.0);
+  float temp = sqrt(sqrt(flux*10.0));
 
-  float omega = uRotSign*1.1*uRotSpeed*pow(3.0/qr, 1.5);
+  float q3 = 3.0/qr;
+  float omega = uRotSign*1.1*uRotSpeed*q3*sqrt(q3);
   float rot = omega*uTime;
   float ca = cos(rot), sa = sin(rot);
   vec3 qp = vec3(ca*q.x + sa*q.z, 0.0, -sa*q.x + ca*q.z);
@@ -236,7 +239,8 @@ bool diskCross(vec3 a, vec3 b, vec3 rayDir, inout vec3 col, inout float trans){
   float radialGain = mix(0.38, 1.0, innerDetail);
 
   float I = flux*11.0*turb*streak*laneMask*radialGain;
-  I += exp(-pow((qr-3.1)*3.0, 2.0))*2.8;
+  float dq = (qr-3.1)*3.0;
+  I += exp(-dq*dq)*2.8;
 
   float outerFade = 1.0 - smoothstep(uDout-14.0, uDout, qr);
   I *= outerFade;
@@ -259,7 +263,9 @@ bool diskCross(vec3 a, vec3 b, vec3 rayDir, inout vec3 col, inout float trans){
 
 // ---------------- Raymarcher Main Loop ----------------
 void main(){
-  vec2 p = (gl_FragCoord.xy - 0.5*uRes)/uRes.y;
+  // uJitter shifts the sample sub-pixel each frame; AccumulatePass averages
+  // the frames, so the small buffer converges to a supersampled image.
+  vec2 p = (gl_FragCoord.xy + uJitter - 0.5*uRes)/uRes.y;
   vec3 ro = uCamPos;
   vec3 ww = normalize(uCamTarget - ro);
   vec3 uu = normalize(cross(ww, vec3(0.0,1.0,0.0)));
@@ -274,7 +280,7 @@ void main(){
   float minR = 1e5;
   float lastR = length(ro);
 
-  for(int i=0;i<240;i++){
+  for(int i=0;i<120;i++){
     if(i >= uSteps) break;
     float r = length(pos);
     lastR = r;
@@ -282,33 +288,30 @@ void main(){
     if(r > 40.0 && dot(pos,vel) > 0.0){ break; } // Escaped ray beyond accretion disk
     minR = min(minR, r);
 
-    float dt = max(0.012, r*mix(0.02, 0.06, smoothstep(6.0, 20.0, r)));
+    float dt = max(0.024, r*mix(0.04, 0.12, smoothstep(6.0, 20.0, r)));
 
     // Volumetric Disk Halo
     float absY = abs(pos.y);
     if(absY < 0.45 && r > uDin && r < uDout){
       float dens = exp(-absY*30.0)*0.03*(1.0 - smoothstep(10.0, uDout-1.0, r));
       float xh = max(r, 3.001);
-      float fluxh = max(pow(xh/3.0, -3.0)*(1.0 - sqrt(3.0/xh)), 0.0);
-      vec3 glowc = blackbody(pow(fluxh*10.0, 0.25)*0.9);
+      float xh3 = xh/3.0;
+      float fluxh = max((1.0 - sqrt(3.0/xh))/(xh3*xh3*xh3), 0.0);
+      vec3 glowc = blackbody(sqrt(sqrt(fluxh*10.0))*0.9);
       haloCol += trans * glowc * (fluxh*3.5) * dens * dt * uDiskBright;
     }
 
     if(r < 4.4){
-      // RK2 Midpoint sub-step integration near photon sphere
-      float hdt = dt*0.5;
-      bool absorbed = false;
-      for(int s = 0; s < 2; s++){
-        vec3 k1 = accAt(pos, vel);
-        vec3 pm = pos + vel*(hdt*0.5);
-        vec3 vm = normalize(vel + k1*(hdt*0.5));
-        vec3 k2 = accAt(pm, vm);
-        vec3 pn = pos + vm*hdt;
-        vel = normalize(vel + k2*hdt);
-        if(diskCross(pos, pn, vel, col, trans)) absorbed = true;
-        pos = pn;
-        minR = min(minR, length(pos));
-      }
+      // RK2 Midpoint integration near photon sphere
+      vec3 k1 = accAt(pos, vel);
+      vec3 pm = pos + vel*(dt*0.5);
+      vec3 vm = normalize(vel + k1*(dt*0.5));
+      vec3 k2 = accAt(pm, vm);
+      vec3 pn = pos + vm*dt;
+      vel = normalize(vel + k2*dt);
+      bool absorbed = diskCross(pos, pn, vel, col, trans);
+      pos = pn;
+      minR = min(minR, length(pos));
       if(absorbed) break;
     } else {
       vel = normalize(vel + accAt(pos, vel)*dt);
@@ -328,7 +331,8 @@ void main(){
     bgAdd = trans * background(vel) * deep;
   }
   // Photon ring perigee critical curve
-  vec3 ringAdd = vec3(1.0,0.92,0.80) * exp(-pow((minR-1.55)*4.0, 2.0)) * 0.05;
+  float dm = (minR-1.55)*4.0;
+  vec3 ringAdd = vec3(1.0,0.92,0.80) * exp(-dm*dm) * 0.05;
 
   vec3 outCol = col + bgAdd + ringAdd;
   outCol += gravityStars(p, uTime);
@@ -342,6 +346,32 @@ varying vec2 vUv;
 void main(){
   vUv = uv;
   gl_Position = vec4(position.xy, 0.0, 1.0);
+}
+`;
+
+export const ACCUM_FRAG = /* glsl */`
+precision highp float;
+
+varying vec2 vUv;
+uniform sampler2D tDiffuse;
+uniform sampler2D tHistory;
+uniform float uBlend;
+
+void main(){
+  vec3 cur = texture2D(tDiffuse, vUv).rgb;
+  vec3 hist = texture2D(tHistory, vUv).rgb;
+  gl_FragColor = vec4(mix(hist, cur, uBlend), 1.0);
+}
+`;
+
+export const COPY_FRAG = /* glsl */`
+precision highp float;
+
+varying vec2 vUv;
+uniform sampler2D tDiffuse;
+
+void main(){
+  gl_FragColor = texture2D(tDiffuse, vUv);
 }
 `;
 

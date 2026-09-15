@@ -5,7 +5,77 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { RAY_VERT, RAY_FRAG, COMPOSITE_VERT, COMPOSITE_FRAG } from './shaders.js';
+import { Pass, FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
+import { RAY_VERT, RAY_FRAG, COMPOSITE_VERT, COMPOSITE_FRAG, ACCUM_FRAG, COPY_FRAG } from './shaders.js';
+
+// Blends each new, sub-pixel jittered raymarch frame into a running history.
+// One sample per pixel in a small buffer shows aliased edges; averaged over a
+// few frames it converges to a supersampled image at no extra raymarch cost.
+class AccumulatePass extends Pass {
+  constructor(rtType) {
+    super();
+    this.history = new THREE.WebGLRenderTarget(2, 2, { type: rtType, depthBuffer: false });
+    this.blend = 1;
+    this.resetPending = true;
+    this.material = new THREE.ShaderMaterial({
+      vertexShader: COMPOSITE_VERT,
+      fragmentShader: ACCUM_FRAG,
+      uniforms: {
+        tDiffuse: { value: null },
+        tHistory: { value: this.history.texture },
+        uBlend: { value: 1 },
+      },
+      depthTest: false,
+      depthWrite: false,
+    });
+    this.copyMaterial = new THREE.ShaderMaterial({
+      vertexShader: COMPOSITE_VERT,
+      fragmentShader: COPY_FRAG,
+      uniforms: { tDiffuse: { value: null } },
+      depthTest: false,
+      depthWrite: false,
+    });
+    this.fsQuad = new FullScreenQuad(this.material);
+  }
+
+  setSize(width, height) {
+    this.history.setSize(width, height);
+    this.resetPending = true; // stale history at the old size
+  }
+
+  render(renderer, writeBuffer, readBuffer) {
+    this.material.uniforms.tDiffuse.value = readBuffer.texture;
+    this.material.uniforms.uBlend.value = this.resetPending ? 1 : this.blend;
+    this.resetPending = false;
+    this.fsQuad.material = this.material;
+    renderer.setRenderTarget(writeBuffer);
+    this.fsQuad.render(renderer);
+
+    // The blended result becomes next frame's history.
+    this.copyMaterial.uniforms.tDiffuse.value = writeBuffer.texture;
+    this.fsQuad.material = this.copyMaterial;
+    renderer.setRenderTarget(this.history);
+    this.fsQuad.render(renderer);
+  }
+
+  dispose() {
+    this.history.dispose();
+    this.material.dispose();
+    this.copyMaterial.dispose();
+    this.fsQuad.dispose();
+  }
+}
+
+// Halton low-discrepancy sequence: evenly spread sub-pixel offsets.
+const halton = (index, base) => {
+  let result = 0;
+  let f = 1;
+  for (let i = index; i > 0; i = Math.floor(i / base)) {
+    f /= base;
+    result += f * (i % base);
+  }
+  return result;
+};
 
 export default function ThreeBackground({ isHeroPage = true }) {
   const canvasRef = useRef(null);
@@ -32,6 +102,16 @@ export default function ThreeBackground({ isHeroPage = true }) {
     const cpuCores = navigator.hardwareConcurrency || 8;
     const deviceMemory = navigator.deviceMemory || 8;
     const isLowPowerDevice = cpuCores <= 4 || deviceMemory <= 4;
+
+    // The raymarcher costs per pixel, so it renders into a buffer smaller than
+    // the canvas and the composite pass upscales the result. Where the GPU
+    // exposes timer queries the scale adapts to the measured cost of our own
+    // render, so it is independent of whatever else the page is doing: weak
+    // GPUs settle on a size they can sustain, fast ones climb to full size.
+    const MIN_SCALE = 0.25;
+    const MAX_SCALE = 1.0;
+    const GPU_BUDGET_MS = 8;
+    let renderScale = isLowPowerDevice ? 0.35 : 0.5;
 
     try {
       renderer = new THREE.WebGLRenderer({
@@ -60,14 +140,24 @@ export default function ThreeBackground({ isHeroPage = true }) {
       halfFloatOK = false;
     }
 
+    // Timer queries exist in Chrome on desktop and Android. Without them the
+    // scale stays fixed and only shrinks if the page clearly struggles.
+    const gl = renderer.getContext();
+    const timerExt = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+    let pendingQuery = null;
+    let gpuSamples = [];
+    let slowAccum = 0;
+    let slowCount = 0;
+
     // Fullscreen raymarching quad
     const fsScene = new THREE.Scene();
     const fsCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
     const FIXED_PARAMS = {
-      // Keep the shader viable on average laptops and phones. The original
-      // 360-step setting was a desktop-demo quality level, not a web baseline.
-      uSteps: isLowPowerDevice ? 120 : 200,
+      // With the doubled step length in the shader, 100 iterations let every
+      // ray finish; fewer would truncate rays near the disk. Cost is controlled
+      // by the render scale below instead.
+      uSteps: 100,
       uDin: 2.75,
       uDout: 40.0,
       uDopMax: 1.85,
@@ -108,6 +198,7 @@ export default function ThreeBackground({ isHeroPage = true }) {
       uStarBright: { value: FIXED_PARAMS.uStarBright },
       uSkyFloor: { value: FIXED_PARAMS.uSkyFloor },
       uRotSpeed: { value: FIXED_PARAMS.uRotSpeed },
+      uJitter: { value: new THREE.Vector2(0, 0) },
     };
 
     const fsMat = new THREE.ShaderMaterial({
@@ -140,7 +231,11 @@ export default function ThreeBackground({ isHeroPage = true }) {
     const rtType = halfFloatOK ? THREE.HalfFloatType : THREE.UnsignedByteType;
     const rt = new THREE.WebGLRenderTarget(2, 2, { type: rtType, depthBuffer: false });
     composer = new EffectComposer(renderer, rt);
+    composer.setPixelRatio(1); // buffers are sized explicitly in applyRenderScale
     composer.addPass(new RenderPass(fsScene, fsCam));
+
+    const accumPass = new AccumulatePass(rtType);
+    composer.addPass(accumPass);
 
     bloomPass = new UnrealBloomPass(
       new THREE.Vector2(2, 2),
@@ -263,31 +358,45 @@ export default function ThreeBackground({ isHeroPage = true }) {
     window.addEventListener('pointerup', handlePointerUp);
 
     const _dbSize = new THREE.Vector2();
+    const applyRenderScale = () => {
+      renderer.getDrawingBufferSize(_dbSize);
+      const rw = Math.max(1, Math.round(_dbSize.x * renderScale));
+      const rh = Math.max(1, Math.round(_dbSize.y * renderScale));
+      composer.setSize(rw, rh);
+      uniforms.uRes.value.set(rw, rh);
+    };
+
+    const setRenderScale = (next) => {
+      const clamped = Math.round(Math.min(MAX_SCALE, Math.max(MIN_SCALE, next)) * 100) / 100;
+      if (clamped === renderScale) return;
+      renderScale = clamped;
+      applyRenderScale();
+    };
+
     const handleResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // This shader runs per pixel. Rendering at native Retina resolution made
-      // the page needlessly expensive, especially on integrated GPUs.
-      const qualityDpr = isLowPowerDevice ? 0.7 : 1.0;
-      const dpr = Math.min(window.devicePixelRatio || 1, qualityDpr);
+      // The canvas stays at (capped) native resolution so the composite pass
+      // keeps vignette and grain crisp; only the raymarch buffer shrinks.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.0);
 
       renderer.setPixelRatio(dpr);
       renderer.setSize(w, h, false);
-      composer.setPixelRatio(dpr);
-      composer.setSize(w, h);
 
       camera.aspect = w / Math.max(h, 1);
       camera.updateProjectionMatrix();
 
       renderer.getDrawingBufferSize(_dbSize);
-      uniforms.uRes.value.copy(_dbSize);
       compositePass.uniforms.uRes.value.copy(_dbSize);
+      applyRenderScale();
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
 
     const initTime = performance.now();
+    const prevCamPos = camera.position.clone();
+    let jitterIndex = 0;
 
     // Render Animation Loop
     const tick = () => {
@@ -333,6 +442,14 @@ export default function ThreeBackground({ isHeroPage = true }) {
         camera.lookAt(0, 0, 0);
       }
 
+      // Temporal accumulation: jitter the sample and weight the new frame by
+      // how far the camera moved, so a fast orbit drag never ghosts while a
+      // still or slowly gliding view converges to a clean supersampled image.
+      jitterIndex = (jitterIndex % 16) + 1;
+      uniforms.uJitter.value.set(halton(jitterIndex, 2) - 0.5, halton(jitterIndex, 3) - 0.5);
+      accumPass.blend = Math.min(1, 0.2 + camera.position.distanceTo(prevCamPos) * 25);
+      prevCamPos.copy(camera.position);
+
       // Sync uniforms
       uniforms.uTime.value = elapsedTime;
       uniforms.uCamPos.value.copy(camera.position);
@@ -340,10 +457,52 @@ export default function ThreeBackground({ isHeroPage = true }) {
       compositePass.uniforms.uTime.value = elapsedTime;
 
       // Render smoothly synced with display VSync
-      const minFrameMs = isInteractiveRef.current ? 16 : (isLowPowerDevice ? 28 : 16);
-      if (now - lastRenderMs >= minFrameMs) {
+      if (now - lastRenderMs >= 16) {
+        const delta = now - lastRenderMs;
         bloomPass.enabled = halfFloatOK && isInteractiveRef.current;
-        composer.render();
+
+        if (timerExt) {
+          // One query in flight at a time; its result is read back on a later
+          // frame once the GPU has finished, so this never stalls the pipeline.
+          if (pendingQuery && gl.getQueryParameter(pendingQuery, gl.QUERY_RESULT_AVAILABLE)) {
+            if (!gl.getParameter(timerExt.GPU_DISJOINT_EXT)) {
+              gpuSamples.push(gl.getQueryParameter(pendingQuery, gl.QUERY_RESULT) / 1e6);
+            }
+            gl.deleteQuery(pendingQuery);
+            pendingQuery = null;
+          }
+          if (!pendingQuery) {
+            pendingQuery = gl.createQuery();
+            gl.beginQuery(timerExt.TIME_ELAPSED_EXT, pendingQuery);
+            composer.render();
+            gl.endQuery(timerExt.TIME_ELAPSED_EXT);
+          } else {
+            composer.render();
+          }
+          if (gpuSamples.length >= 20) {
+            // The median ignores the odd outlier (shader compile, a stall).
+            gpuSamples.sort((a, b) => a - b);
+            const median = gpuSamples[gpuSamples.length >> 1];
+            gpuSamples = [];
+            if (median > GPU_BUDGET_MS * 1.15) {
+              setRenderScale(renderScale * 0.85);
+            } else if (median < GPU_BUDGET_MS * 0.6) {
+              setRenderScale(renderScale * 1.1);
+            }
+          }
+        } else {
+          composer.render();
+          if (delta < 250) {
+            slowAccum += delta;
+            slowCount++;
+          }
+          if (slowAccum >= 1000) {
+            // Sustained < 25 fps: shrink, and never grow back without a timer.
+            if (slowAccum / slowCount > 40) setRenderScale(renderScale * 0.8);
+            slowAccum = 0;
+            slowCount = 0;
+          }
+        }
         lastRenderMs = now;
       }
       animationFrameId = window.requestAnimationFrame(tick);
@@ -377,6 +536,7 @@ export default function ThreeBackground({ isHeroPage = true }) {
       canvas.removeEventListener('webglcontextlost', handleContextLost);
       canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       window.cancelAnimationFrame(animationFrameId);
+      if (pendingQuery) gl.deleteQuery(pendingQuery);
       if (controls) controls.dispose();
       if (composer) composer.dispose();
       if (renderer) renderer.dispose();
