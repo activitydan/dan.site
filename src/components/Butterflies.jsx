@@ -86,23 +86,84 @@ export default function Butterflies({ isHeroPage = true }) {
     isHeroPageRef.current = isHeroPage;
   }, [isHeroPage]);
 
+  const shouldPause = () => document.hidden || !isHeroPageRef.current;
+
   useEffect(() => {
     const el = hostRef.current;
     if (!el) return undefined;
 
     let mounted = true;
     let instance = null;
+    let monitorId = null;
+
+    // The library fixes the instance count when it builds the mesh, but
+    // three.js happily draws fewer than were allocated. That lets the swarm
+    // thin itself out on hardware that cannot keep up, which a core count
+    // alone cannot predict. Start positions are randomised on every axis, so
+    // dropping the tail of the instances just makes the swarm sparser.
+    const THIN_BELOW_FPS = 45;
+    // The gap between the two thresholds is the hysteresis: a swarm sitting
+    // between 45 and 58fps is left alone rather than pumped up and down.
+    const RESTORE_ABOVE_FPS = 58;
+    const MIN_COUNT_RATIO = 0.35;
+
+    const watchFrameRate = (swarm) => {
+      const fullCount = swarm.count;
+      const floor = Math.round(fullCount * MIN_COUNT_RATIO);
+      const thinAboveMs = 1000 / THIN_BELOW_FPS;
+      const restoreBelowMs = 1000 / RESTORE_ABOVE_FPS;
+      let samples = [];
+      let last = performance.now();
+
+      const tick = (now) => {
+        monitorId = window.requestAnimationFrame(tick);
+        const delta = now - last;
+        last = now;
+        // A paused swarm, and a tab coming back from the background, both
+        // report deltas that say nothing about how fast we can draw.
+        if (shouldPause() || delta > 250) {
+          samples = [];
+          return;
+        }
+        samples.push(delta);
+        if (samples.length < 60) return;
+        samples.sort((a, b) => a - b);
+        const median = samples[samples.length >> 1];
+        samples = [];
+        if (median > thinAboveMs && swarm.count > floor) {
+          swarm.count = Math.max(floor, Math.round(swarm.count * 0.8));
+        } else if (median < restoreBelowMs && swarm.count < fullCount) {
+          // Recover from a transient stall, such as the page still settling
+          // at load, instead of staying thinned out for the whole session.
+          swarm.count = Math.min(fullCount, Math.round(swarm.count * 1.1) + 1);
+        }
+      };
+
+      monitorId = window.requestAnimationFrame(tick);
+    };
 
     const init = () => {
       if (!mounted) return;
       try {
+        // Each butterfly is 32 double-sided triangles, so the grid size is
+        // the main cost: 68x68 is ~4600 of them, ~148k triangles a frame.
+        // Weak GPUs and phones get a smaller swarm, which still fills the
+        // frame because the individuals are what read, not the count.
+        const cpuCores = navigator.hardwareConcurrency || 8;
+        const deviceMemory = navigator.deviceMemory || 8;
+        const isLowPowerDevice = cpuCores <= 4 || deviceMemory <= 4;
+        const isSmallViewport = window.innerWidth <= 768;
+
         instance = butterfliesBackground({
           el,
-          // 68x68 positions computed on the GPU, so ~4600 butterflies.
-          gpgpuSize: 68,
+          gpgpuSize: isLowPowerDevice || isSmallViewport ? 40 : 68,
           background: 0x050505,
           material: 'basic',
-          materialParams: { transparent: true, alphaTest: 0.1 },
+          // alphaTest alone cuts the sprite's background, and leaving the
+          // material opaque keeps depth writes and early-z, so overlapping
+          // butterflies stop paying for a full-screen blend every frame.
+          // The wings are 98% opaque anyway, so nothing looks different.
+          materialParams: { alphaTest: 0.1 },
           texture: makeButterfliesTexture(),
           textureCount: 4,
           wingsScale: [1, 1, 1],
@@ -122,7 +183,9 @@ export default function Butterflies({ isHeroPage = true }) {
         instanceRef.current = instance;
         // Landing on another route mounts the swarm already hidden, so it
         // must start paused rather than wait for the first route change.
-        instance.three.setPaused(!isHeroPageRef.current);
+        instance.three.setPaused(shouldPause());
+        const swarm = instance.three.scene.children.find((o) => o.isInstancedMesh);
+        if (swarm) watchFrameRate(swarm);
       } catch (err) {
         console.error('butterflies init failed:', err);
       }
@@ -140,6 +203,7 @@ export default function Butterflies({ isHeroPage = true }) {
       mounted = false;
       if (idleHandle !== undefined) window.cancelIdleCallback?.(idleHandle);
       if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
+      if (monitorId !== null) window.cancelAnimationFrame(monitorId);
       instanceRef.current = null;
       // Without this the library keeps its render loop, resize listener and
       // WebGL context alive; StrictMode's double mount would leave two.
@@ -147,11 +211,19 @@ export default function Butterflies({ isHeroPage = true }) {
     };
   }, []);
 
-  // Off the hero the swarm is invisible, so stop rendering it instead of
-  // paying for a hidden GPGPU pass on every other page.
+  // Off the hero the swarm is invisible, and in a background tab nobody is
+  // looking, so stop rendering instead of paying for the GPGPU pass.
   useEffect(() => {
-    instanceRef.current?.three?.setPaused(!isHeroPage);
+    instanceRef.current?.three?.setPaused(shouldPause());
   }, [isHeroPage]);
+
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      instanceRef.current?.three?.setPaused(shouldPause());
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, []);
 
   return (
     <div className={`three-hero-bg-wrapper ${isHeroPage ? 'hero-visible' : 'hero-hidden'}`}>
