@@ -148,15 +148,15 @@ export const translations = {
       categories: [
         {
           title: 'Frontend e cura dell’interfaccia',
-          summary: 'Layout responsive, struttura a componenti, stili puliti ed esperienze curate nel dettaglio.',
+          summary: 'Layout responsive, ottimizzazione completa, struttura a componenti, stili puliti ed esperienze curate nel dettaglio.',
         },
         {
           title: 'AI generativa e costruzione dei prompt',
-          summary: 'Schemi di prompt precisi, LLM diretti verso la scrittura di codice e streaming sotto il secondo.',
+          summary: 'Schemi di prompt precisi e modelli LLM diretti all’automazione del codice e allo sviluppo assistito con Claude Code e strumenti AI.',
         },
         {
-          title: 'Progettazione di sistemi e flussi dati',
-          summary: 'Livelli di presentazione disaccoppiati, modelli client-server, contratti REST e protocolli WebSocket.',
+          title: 'Analisi dati e architettura di memorizzazione',
+          summary: 'Specialista nella modellazione di dati complessi e calcolo analitico. Progetto e ottimizzo il bilanciamento tra design, efficienza e prestazioni di archiviazione dati, integrando modelli quantitativi e strutturando Web App dedicate.',
         },
         {
           title: 'Cloud e distribuzione',
@@ -372,15 +372,15 @@ export const translations = {
       categories: [
         {
           title: 'Frontend & UI Craft (Hands-On)',
-          summary: 'Responsive layouts, component structure, clean styling, and high-fidelity user experiences.',
+          summary: 'Responsive layouts, full optimisation, component structure, clean styling, and high-fidelity user experiences.',
         },
         {
           title: 'Generative AI & Prompt Design',
-          summary: 'Architecting precision prompt schemas, directing LLMs for code synthesis, and sub-second streaming.',
+          summary: 'Precise prompt schemas and LLMs directed at code automation and AI-assisted development with Claude Code and other AI tools.',
         },
         {
-          title: 'System Design & Data Flows',
-          summary: 'Decoupled presentation layers, client-server models, RESTful contracts, and WebSocket protocols.',
+          title: 'Data Analysis & Storage Architecture',
+          summary: 'Specialised in modelling complex data and analytical computation. I design and tune the balance between design, efficiency and data storage performance, integrating quantitative models and building dedicated web apps.',
         },
         {
           title: 'Cloud & Deployment',

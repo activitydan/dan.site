@@ -11,25 +11,25 @@ const categoryData = [
     id: '01',
     tag: 'CORE UI ENGINEERING',
     telemetry: '80% Proficiency • Pixel Precision',
-    skills: ['HTML5', 'CSS3 Layouts', 'Tailwind CSS', 'Responsive UI', 'JavaScript Basics', 'React Basics']
+    skills: ['HTML5', 'CSS3 Layouts', 'Responsive UI', 'JavaScript Basics', 'React Basics']
   },
   {
     id: '02',
     tag: 'AI-AUGMENTED ENGINEERING',
-    telemetry: 'Gemini API • Prompt Schemas',
-    skills: ['Prompt Engineering', 'AI-Augmented Coding', 'Google Gemini API', 'Token Streaming', 'Code Synthesis', 'Rapid Sprints']
+    telemetry: 'Claude Code • Prompt Schemas',
+    skills: ['Prompt Engineering', 'AI Automator', 'Google Gemini', 'Claude Code AI', 'Code Synthesis']
   },
   {
     id: '03',
-    tag: 'SYSTEM ARCHITECTURE',
-    telemetry: 'Decoupled Edge • Sub-85ms TTFB',
-    skills: ['Decoupled Architecture', 'System Design', 'RESTful APIs', 'WebSocket Flows', 'Data Contracts', 'Authentication PKCE']
+    tag: 'DATA & ARCHITECTURE',
+    telemetry: 'Optimized Storage • Data Efficiency',
+    skills: ['Data Analysis', 'Web App Architecture', 'Data Storage Efficiency', 'Data-to-Design Ratio', 'Spreadsheet Optimization', 'Data Modeling']
   },
   {
     id: '04',
     tag: 'EDGE & CLOUD RUNTIMES',
-    telemetry: 'Cloudflare Pages • Edge Workers',
-    skills: ['Cloudflare Pages', 'Cloudflare Workers', 'Vercel', 'Git', 'GitHub', 'CI/CD Deployments']
+    telemetry: 'Deployments&build • dev server',
+    skills: ['Vercel', 'Git', 'GitHub', 'CI/CD Deployments']
   },
   {
     id: '05',
