@@ -242,7 +242,7 @@ export default function Skills() {
               >
                 <div className="orbital-card-inner">
                   {/* Top Bar: Code Index & Tag */}
-                  <div className="orbital-card-top font-mono">
+                  <div className="orbital-card-top font-label">
                     <span className="skill-id-badge">{cat.id}</span>
                     <span className="skill-tag uppercase">{cat.tag}</span>
                   </div>
@@ -252,13 +252,13 @@ export default function Skills() {
                   <p className="skill-card-summary text-gray">{cat.summary}</p>
 
                   {/* Live Running Telemetry Meter */}
-                  <div className="orbital-telemetry-badge font-mono">
+                  <div className="orbital-telemetry-badge font-label">
                     <span className="telemetry-icon">⚡</span>
                     <span className="telemetry-text">{cat.telemetry}</span>
                   </div>
 
                   {/* Skill Chips List */}
-                  <ul className="skill-list font-mono">
+                  <ul className="skill-list font-label">
                     {cat.skills.map((s) => (
                       <li key={s} className="skill-pill">
                         {s}

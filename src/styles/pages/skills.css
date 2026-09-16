@@ -164,7 +164,7 @@
 
 .skill-id-badge {
   font-size: 0.65rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
   padding: 0.15rem 0.5rem;
@@ -186,7 +186,7 @@
 .skill-card-title {
   color: #ffffff;
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
   margin-bottom: 0.45rem;
   line-height: 1.2;

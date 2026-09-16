@@ -1,4 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  /* Helvetica Neue is a system face on Apple platforms; Helvetica and Arial
+     cover the rest with the same metrics and the same two cuts, so the
+     regular/bold pairing this sheet relies on holds everywhere. */
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* The two pieces of type that deliberately stay as they were: the hero
+     headline, and the EXPLORE / [ ABOUT ] label inside the globe. Nothing
+     else should reach for these, which is why the webfont import above now
+     pulls only the weights those two need. */
+  --font-display: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
 
 /* Reset & Base Styles */
 * {
@@ -10,7 +24,8 @@
 body {
   background-color: #050505;
   color: #e5e5e5;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -49,8 +64,12 @@ body {
 }
 
 /* Typography Utilities */
-.font-mono {
-  font-family: 'Space Mono', monospace;
+
+/* The bold cut, for the type that carries it: nav items, badges, buttons,
+   section labels, metrics. Body copy stays on the regular cut from body. */
+.font-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
 .text-gray {

@@ -12,7 +12,7 @@
 }
 
 .loader-text {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--font-sans);
   font-size: 2rem;
   color: #fff;
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);

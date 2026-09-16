@@ -3,7 +3,7 @@ import HeroGlobeButton from './HeroGlobeButton';
 export default function Hero() {
   return (
     <header className="container hero-container">
-      <p className="hero-elem hero-subtitle font-mono uppercase">
+      <p className="hero-elem hero-subtitle font-label uppercase">
         System Architect & AI-Augmented Developer
       </p>
       <h1 className="hero-elem hero-title-1 uppercase text-glow-intense glitch-wrapper" data-text="WEB">

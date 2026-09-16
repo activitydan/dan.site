@@ -484,7 +484,7 @@
   right: 1rem;
   font-size: 0.75rem;
   color: #555;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .node-title {
@@ -584,7 +584,7 @@
 
 .metric-value {
   font-size: 1.85rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #fff;
   margin-bottom: 0.4rem;
   letter-spacing: -0.02em;

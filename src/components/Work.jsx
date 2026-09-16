@@ -180,7 +180,7 @@ export default function Work() {
             <div className={`project-bg ${proj.bgClass}`} />
             <div className="project-overlay" />
             <div className="project-info">
-              <p className="font-mono project-category text-gray uppercase">{proj.category}</p>
+              <p className="font-label project-category text-gray uppercase">{proj.category}</p>
               <h3 className="project-title text-glow uppercase">{proj.title}</h3>
             </div>
           </div>

@@ -13,7 +13,7 @@
 
 .section-title {
   font-size: clamp(2.3rem, 4.4vw, 3.8rem);
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.05;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
@@ -198,7 +198,7 @@
   font-size: 0.65rem;
   letter-spacing: 1.5px;
   color: #38bdf8;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .card-indicator {
@@ -209,7 +209,7 @@
 
 .telemetry-card-title {
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   margin: 0 0 0.65rem 0;
   letter-spacing: 0.5px;
@@ -280,7 +280,7 @@
   background: #0ea5e9;
   color: #fff;
   font-size: 0.6rem;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .linkedin-preview-role {

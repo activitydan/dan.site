@@ -24,7 +24,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.18em;
   font-weight: 700;
-  font-family: ui-monospace, 'SF Mono', monospace;
+  font-family: var(--font-sans);
   color: #ffb454;
   text-shadow: 0 0 12px rgba(255, 180, 84, 0.5);
 }
@@ -32,6 +32,6 @@
 .orbit-mode-badge .badge-hint {
   font-size: 0.65rem;
   letter-spacing: 0.08em;
-  font-family: ui-monospace, 'SF Mono', monospace;
+  font-family: var(--font-sans);
   color: rgba(234, 250, 255, 0.7);
 }

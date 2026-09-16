@@ -137,7 +137,7 @@ export default function Timeline() {
           <MaskedTitle text="Engineering Journey" />
           <div className="divider" />
         </div>
-        <div className="timeline-header-meta font-mono">
+        <div className="timeline-header-meta font-label">
           <div className="timeline-meta-pill">
             <span className={`meta-pulse-dot ${isPaused ? 'is-paused' : ''}`} />
             <span className="meta-pill-text">
@@ -169,7 +169,7 @@ export default function Timeline() {
       >
         <button
           type="button"
-          className="timeline-side-arrow timeline-arrow-prev hoverable font-mono"
+          className="timeline-side-arrow timeline-arrow-prev hoverable font-label"
           onClick={handlePrev}
           onMouseEnter={playHoverSound}
           aria-label="Previous phase"
@@ -199,7 +199,7 @@ export default function Timeline() {
                   <div className="timeline-stage-card hoverable">
                     {/* Left Pane: Narrative & Technical Telemetry */}
                     <div className="timeline-narrative-pane">
-                      <div className="stage-topbar font-mono">
+                      <div className="stage-topbar font-label">
                         <div className="stage-topbar-left">
                           <span className="stage-badge uppercase">{item.category}</span>
                           <span className="stage-date uppercase">{item.date}</span>
@@ -209,13 +209,13 @@ export default function Timeline() {
 
                       <div className="stage-title-wrap">
                         <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                        <div className="stage-headline font-mono text-gray uppercase">{item.headline}</div>
+                        <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
                       </div>
 
                       <p className="stage-summary text-gray">{item.summary}</p>
 
                       {/* Telemetry Metrics Grid */}
-                      <div className="stage-metrics-grid font-mono">
+                      <div className="stage-metrics-grid font-label">
                         {item.metrics.map((m, mIdx) => (
                           <div key={mIdx} className="stage-metric-box">
                             <span className="metric-lbl text-gray">{m.label}</span>
@@ -225,7 +225,7 @@ export default function Timeline() {
                       </div>
 
                       {/* Tech Stack Pills matching .skill-pill */}
-                      <div className="stage-tech-pills font-mono">
+                      <div className="stage-tech-pills font-label">
                         {item.techStack.map((tech, tIdx) => (
                           <span key={tIdx} className="stage-pill">
                             {tech}
@@ -249,7 +249,7 @@ export default function Timeline() {
 
         <button
           type="button"
-          className="timeline-side-arrow timeline-arrow-next hoverable font-mono"
+          className="timeline-side-arrow timeline-arrow-next hoverable font-label"
           onClick={handleNext}
           onMouseEnter={playHoverSound}
           aria-label="Next phase"

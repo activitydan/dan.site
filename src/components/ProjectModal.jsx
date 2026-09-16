@@ -121,7 +121,7 @@ export default function ProjectModal({ open, onClose, project }) {
         {/* Top Header */}
         <div className="project-modal-header">
           <div>
-            <p className="project-modal-tag font-mono uppercase">
+            <p className="project-modal-tag font-label uppercase">
               {project.category || 'Case Study • Production System'}
             </p>
             <h3 className="project-modal-title text-glow-intense uppercase">{project.title}</h3>
@@ -141,7 +141,7 @@ export default function ProjectModal({ open, onClose, project }) {
         </div>
 
         {/* Editorial Case Study Navigation Tab Bar */}
-        <div className="project-modal-tab-bar font-mono">
+        <div className="project-modal-tab-bar font-label">
           <button
             type="button"
             className={`project-modal-tab-btn hoverable ${activeTab === 'overview' ? 'active' : ''}`}
@@ -223,7 +223,7 @@ export default function ProjectModal({ open, onClose, project }) {
             <div className="project-modal-content">
               {project.problem && (
                 <div className="case-study-callout-card">
-                  <div className="callout-header font-mono uppercase">
+                  <div className="callout-header font-label uppercase">
                     <span className="callout-glow-dot"></span> The Engineering Challenge
                   </div>
                   <p className="callout-text">{project.problem}</p>
@@ -236,7 +236,7 @@ export default function ProjectModal({ open, onClose, project }) {
 
               {features?.length ? (
                 <div className="project-modal-section">
-                  <p className="project-modal-section-title font-mono uppercase">Core Capabilities</p>
+                  <p className="project-modal-section-title font-label uppercase">Core Capabilities</p>
                   <ul className="project-modal-list">
                     {features.map((f) => (
                       <li key={f}>{f}</li>
@@ -247,7 +247,7 @@ export default function ProjectModal({ open, onClose, project }) {
 
               {techStack?.length ? (
                 <div className="project-modal-section">
-                  <p className="project-modal-section-title font-mono uppercase">Technologies & Tools</p>
+                  <p className="project-modal-section-title font-label uppercase">Technologies & Tools</p>
                   <div className="project-modal-pills">
                     {techStack.map((t) => (
                       <span key={t} className="project-modal-pill">
@@ -261,7 +261,7 @@ export default function ProjectModal({ open, onClose, project }) {
               <div className="project-modal-actions">
                 {liveDemoUrl && liveDemoUrl !== '#' && (
                   <a
-                    className="project-modal-action-btn hoverable font-mono uppercase primary-btn"
+                    className="project-modal-action-btn hoverable font-label uppercase primary-btn"
                     href={liveDemoUrl}
                     target="_blank"
                     rel="noreferrer"
@@ -272,7 +272,7 @@ export default function ProjectModal({ open, onClose, project }) {
 
                 {githubUrl ? (
                   <a
-                    className="project-modal-action-btn hoverable font-mono uppercase"
+                    className="project-modal-action-btn hoverable font-label uppercase"
                     href={githubUrl}
                     target="_blank"
                     rel="noreferrer"
@@ -283,7 +283,7 @@ export default function ProjectModal({ open, onClose, project }) {
 
                 <button
                   type="button"
-                  className="project-modal-action-btn hoverable font-mono uppercase secondary-btn"
+                  className="project-modal-action-btn hoverable font-label uppercase secondary-btn"
                   onClick={() => setActiveTab('architecture')}
                 >
                   View Architecture →
@@ -299,7 +299,7 @@ export default function ProjectModal({ open, onClose, project }) {
             {/* 1. Interactive Visual Pipeline Diagram */}
             <div className="case-study-section">
               <div className="case-study-section-header">
-                <span className="section-badge font-mono uppercase">01 • Pipeline Flow</span>
+                <span className="section-badge font-label uppercase">01 • Pipeline Flow</span>
                 <h4 className="case-study-heading">Decoupled Distributed Architecture</h4>
                 <p className="case-study-subheading text-gray">
                   Data flow and security boundary isolation from edge network delivery down to asynchronous processing models.
@@ -311,9 +311,9 @@ export default function ProjectModal({ open, onClose, project }) {
                   {architectureFlow.map((node, i) => (
                     <div key={node.step} className="architecture-node-wrapper">
                       <div className="architecture-node-card">
-                        <div className="node-step font-mono">{node.step}</div>
-                        <h5 className="node-title uppercase font-mono">{node.title}</h5>
-                        <div className="node-tech-badge font-mono">{node.tech}</div>
+                        <div className="node-step font-label">{node.step}</div>
+                        <h5 className="node-title uppercase font-label">{node.title}</h5>
+                        <div className="node-tech-badge font-label">{node.tech}</div>
                         <p className="node-desc text-gray">{node.desc}</p>
                       </div>
                       {i < architectureFlow.length - 1 && (
@@ -331,7 +331,7 @@ export default function ProjectModal({ open, onClose, project }) {
             {/* 2. Key Technical Decisions */}
             <div className="case-study-section">
               <div className="case-study-section-header">
-                <span className="section-badge font-mono uppercase">02 • Engineering Strategy</span>
+                <span className="section-badge font-label uppercase">02 • Engineering Strategy</span>
                 <h4 className="case-study-heading">Architectural Decisions & Trade-Offs</h4>
               </div>
 
@@ -339,14 +339,14 @@ export default function ProjectModal({ open, onClose, project }) {
                 {architectureDetails.length > 0 ? (
                   architectureDetails.map((item) => (
                     <div key={item.title} className="decision-card">
-                      <div className="decision-card-icon font-mono">✦</div>
-                      <h5 className="decision-card-title uppercase font-mono">{item.title}</h5>
+                      <div className="decision-card-icon font-label">✦</div>
+                      <h5 className="decision-card-title uppercase font-label">{item.title}</h5>
                       <p className="decision-card-desc text-gray">{item.desc}</p>
                     </div>
                   ))
                 ) : (
                   <div className="decision-card">
-                    <h5 className="decision-card-title uppercase font-mono">Decoupled Client & Microservice Boundary</h5>
+                    <h5 className="decision-card-title uppercase font-label">Decoupled Client & Microservice Boundary</h5>
                     <p className="decision-card-desc text-gray">
                       Separated static presentation assets from data parsing APIs, reducing bundle sizes and optimizing client TTFB.
                     </p>
@@ -359,15 +359,15 @@ export default function ProjectModal({ open, onClose, project }) {
             {metrics.length > 0 && (
               <div className="case-study-section">
                 <div className="case-study-section-header">
-                  <span className="section-badge font-mono uppercase">03 • Verification</span>
+                  <span className="section-badge font-label uppercase">03 • Verification</span>
                   <h4 className="case-study-heading">Observed System Benchmarks</h4>
                 </div>
 
                 <div className="metrics-tiles-grid">
                   {metrics.map((m) => (
                     <div key={m.label} className="metric-tile">
-                      <div className="metric-value font-mono text-glow-intense">{m.value}</div>
-                      <div className="metric-label font-mono uppercase text-gray">{m.label}</div>
+                      <div className="metric-value font-label text-glow-intense">{m.value}</div>
+                      <div className="metric-label font-label uppercase text-gray">{m.label}</div>
                     </div>
                   ))}
                 </div>
@@ -380,7 +380,7 @@ export default function ProjectModal({ open, onClose, project }) {
         {activeTab === 'prototype' && (
           <div className="project-modal-prototype-body" data-lenis-prevent="true">
             {/* Luxury Browser Mockup Chrome */}
-            <div className="prototype-browser-bar font-mono">
+            <div className="prototype-browser-bar font-label">
               <div className="browser-dots" aria-hidden="true">
                 <span className="dot dot-red"></span>
                 <span className="dot dot-yellow"></span>
@@ -429,7 +429,7 @@ export default function ProjectModal({ open, onClose, project }) {
               {exploreUrl && exploreUrl !== '#' ? (
                 <>
                   {!iframeLoaded && (
-                    <div className="prototype-loading-overlay font-mono">
+                    <div className="prototype-loading-overlay font-label">
                       <div className="prototype-spinner"></div>
                       <span>Connecting to secure live preview...</span>
                     </div>
@@ -444,13 +444,13 @@ export default function ProjectModal({ open, onClose, project }) {
                 </>
               ) : (
                 <div className="prototype-empty-state">
-                  <p className="font-mono uppercase text-gray">Production environment undergoing private deployment.</p>
+                  <p className="font-label uppercase text-gray">Production environment undergoing private deployment.</p>
                   {githubUrl && (
                     <a
                       href={githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="project-modal-action-btn hoverable font-mono uppercase"
+                      className="project-modal-action-btn hoverable font-label uppercase"
                     >
                       Inspect Source on GitHub
                     </a>

@@ -61,13 +61,13 @@ export default function Preloader({ onLoaded }) {
       style={!isVisible ? { opacity: 0, pointerEvents: 'none' } : {}}
     >
       <div className="preloader-hud">
-        <div className="loader-text font-mono">
+        <div className="loader-text font-label">
           INITIALIZING
         </div>
         <div className="loader-bar-bg">
           <div className="loader-bar" style={{ width: `${progress}%` }} />
         </div>
-        <div className="preloader-footer font-mono" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+        <div className="preloader-footer font-label" style={{ justifyContent: 'center', marginTop: '1rem' }}>
           <span className="preloader-pct">{String(progress).padStart(3, '0')}%</span>
         </div>
       </div>

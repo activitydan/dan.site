@@ -18,7 +18,7 @@ function ScrambleLink({ href, children, className, ...props }) {
 export default function Footer() {
   return (
     <footer>
-      <div className="container footer-inner font-mono text-gray">
+      <div className="container footer-inner font-label text-gray">
         <p>© 2026 BUILD WITH DAN. All systems operational.</p>
         <div className="social-links uppercase">
           <ScrambleLink href="https://github.com/DineshS36" className="hoverable" target="_blank" rel="noopener noreferrer">Github</ScrambleLink>

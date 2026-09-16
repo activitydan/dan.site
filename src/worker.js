@@ -114,7 +114,7 @@ export default {
 
         const emailPayload = {
           from: 'Portfolio Contact <onboarding@resend.dev>',
-          to: ['itsdinesh036@gmail.com'],
+          to: ['activity.dann@gmail.com'],
           subject: `[Portfolio Inquiry] ${senderName.trim()}`,
           html: emailHtml,
           text: `Name: ${senderName}\nEmail: ${cleanEmail || 'Not provided'}\n\nMessage:\n${senderMessage}`,

@@ -92,7 +92,7 @@
 
 .project-title {
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {

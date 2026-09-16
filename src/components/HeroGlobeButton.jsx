@@ -243,8 +243,8 @@ export default function HeroGlobeButton() {
 
       {/* Center Core HUD with Typography */}
       <div ref={coreRef} className="globe-core-lens">
-        <span className="globe-action font-mono uppercase">EXPLORE</span>
-        <span className="globe-sub font-mono">[ ABOUT ]</span>
+        <span className="globe-action uppercase">EXPLORE</span>
+        <span className="globe-sub">[ ABOUT ]</span>
         <div className="globe-arrow-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M12 5v14M19 12l-7 7-7-7" />

@@ -84,7 +84,7 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: #ffffff;
   letter-spacing: 0.08em;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .meta-pulse-dot {
@@ -242,7 +242,7 @@
 
 .stage-title {
   font-size: 1.65rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.25;
   color: #ffffff;
   letter-spacing: -0.01em;

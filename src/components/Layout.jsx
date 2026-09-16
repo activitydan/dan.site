@@ -195,7 +195,7 @@ export default function Layout({ isPreloaderDone }) {
           <button
             type="button"
             onClick={() => (transitionTo ? transitionTo('next') : navigate(nextRoute))}
-            className="scroll-hint scroll-hint-bottom font-mono text-gray hoverable"
+            className="scroll-hint scroll-hint-bottom font-label text-gray hoverable"
             style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer' }}
           >
             Scroll down or click for next section ({nextRoute.slice(1)}) <span className="scroll-arrow">↓</span>

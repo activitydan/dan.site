@@ -47,7 +47,7 @@ export default function Contact() {
 
   const handleCopyEmail = () => {
     playClickSound();
-    navigator.clipboard.writeText('itsdinesh036@gmail.com');
+    navigator.clipboard.writeText('activity.dann@gmail.com');
     setCopied(true);
     setTimeout(() => setCopied(false), 2400);
   };
@@ -133,7 +133,7 @@ export default function Contact() {
         <div className="contact-beacon-wrapper">
           {/* Centered Header */}
           <div className="contact-header centered gsap-reveal">
-            <div className="beacon-eyebrow font-mono uppercase">
+            <div className="beacon-eyebrow font-label uppercase">
               <span>Get in Touch</span>
             </div>
 
@@ -150,7 +150,7 @@ export default function Contact() {
           <div
             ref={monolithRef}
             onMouseMove={handleMouseMove}
-            className="cosmic-monolith-card hoverable gsap-reveal font-mono"
+            className="cosmic-monolith-card hoverable gsap-reveal font-label"
           >
             {/* Monolith Topbar */}
             <div className="monolith-topbar">
@@ -170,7 +170,7 @@ export default function Contact() {
                 {/* 0-100% Counter in the center above the flight path */}
                 <div className="launch-counter-overlay">
                   <div className="launch-counter-value text-glow">{launchProgress}%</div>
-                  <div className="launch-status-subtext font-mono text-gray">
+                  <div className="launch-status-subtext font-label text-gray">
                     {launchProgress < 30 && 'Preparing flight trajectory...'}
                     {launchProgress >= 30 && launchProgress < 75 && 'Gliding across communications channel...'}
                     {launchProgress >= 75 && launchProgress < 100 && 'Approaching destination...'}
@@ -287,7 +287,7 @@ export default function Contact() {
 
             {/* 2. Sent Confirmation State */}
             {sendState === 'sent' && (
-              <div className="sent-success-stage font-mono">
+              <div className="sent-success-stage font-label">
                 <div className="sent-success-icon-wrap">
                   <span className="sent-success-check">✓</span>
                 </div>
@@ -297,7 +297,7 @@ export default function Contact() {
                 </p>
                 <button
                   type="button"
-                  className="send-another-btn hoverable font-mono uppercase"
+                  className="send-another-btn hoverable font-label uppercase"
                   onClick={handleResetForm}
                   onMouseEnter={playHoverSound}
                 >
@@ -382,7 +382,7 @@ export default function Contact() {
                   </button>
 
                   {statusMsg && (
-                    <div className="form-status-msg text-glow font-mono">
+                    <div className="form-status-msg text-glow font-label">
                       {statusMsg}
                     </div>
                   )}
@@ -392,11 +392,11 @@ export default function Contact() {
           </div>
 
           {/* Centered Direct Comms Deck */}
-          <div className="direct-comms-deck gsap-reveal font-mono">
+          <div className="direct-comms-deck gsap-reveal font-label">
             <div className="comms-capsule">
               <div className="comms-channel-info">
                 <span className="comms-tag text-gray">My Email:</span>
-                <span className="comms-email">itsdinesh036@gmail.com</span>
+                <span className="comms-email">activity.dann@gmail.com</span>
               </div>
 
               <button

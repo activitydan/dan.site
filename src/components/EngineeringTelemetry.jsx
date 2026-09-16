@@ -5,7 +5,7 @@ export default function EngineeringTelemetry() {
   const { playHoverSound, playClickSound } = useAudio();
 
   return (
-    <div className="telemetry-command-deck gsap-reveal font-mono">
+    <div className="telemetry-command-deck gsap-reveal font-label">
       {/* Top Header Bar - Clean and Professional */}
       <div className="telemetry-header">
         <div className="telemetry-header-left">

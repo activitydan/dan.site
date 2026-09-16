@@ -15,7 +15,7 @@ export default function About() {
             <p className="text-gray about-text">
               I’m Dan, an AI-Native Full Stack Developer and 4th-year AIML student specializing in architecture-driven, AI-augmented engineering. Rather than spending weeks writing boilerplate code by hand, I operate at the architectural level: designing decoupled system flows, data schemas, API contracts, and responsive UI layouts with HTML, CSS, and Tailwind. By directing generative AI as an engineering co-pilot, I synthesize, debug, and deploy production-ready cloud applications to Cloudflare Pages and Vercel at rapid sprint velocities.
             </p>
-            <div className="font-mono text-gray skill-list text-sm">
+            <div className="font-label text-gray skill-list text-sm">
               <p><span style={{ color: '#fff' }}></span> System Architecture & Data Flows</p>
               <p><span style={{ color: '#fff' }}></span> AI-Augmented Code Synthesis & Prompting</p>
               <p><span style={{ color: '#fff' }}></span> UI Layout Craft (HTML, CSS, Tailwind)</p>
