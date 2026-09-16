@@ -12,6 +12,11 @@
      pulls only the weights those two need. */
   --font-display: 'Inter', sans-serif;
   --font-mono: 'Space Mono', monospace;
+
+  /* The floating nav dock and the controls pill are two halves of the same
+     bar and have to line up. Both are built from this inner height plus
+     0.25rem of vertical padding and a 1px border. */
+  --dock-inner-height: 3.5rem;
 }
 
 /* Reset & Base Styles */
