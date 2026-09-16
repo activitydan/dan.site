@@ -20,14 +20,15 @@ function makeButterfliesTexture() {
     // How far the wings are spread in this frame, cycling across the sheet.
     const open = 0.4 + 0.55 * Math.abs(Math.sin((f / FRAMES) * Math.PI));
 
-    // Green wings with lifted-blue veins. A pure dark blue would not register
-    // against the near-black page, so the veins use the lightened step while
-    // the swarm reads green overall.
+    // White wings with grey veins. Each butterfly samples one frame of the
+    // sheet, so spreading the whites across the four keeps the swarm from
+    // reading as one flat tone against the near-black page while every
+    // individual still reads as white.
     const palette = [
-      ['rgba(76,175,80,0.98)', 'rgba(45,95,224,0.9)'],
-      ['rgba(127,211,130,0.98)', 'rgba(60,120,240,0.9)'],
-      ['rgba(96,190,100,0.98)', 'rgba(45,95,224,0.9)'],
-      ['rgba(150,225,152,0.98)', 'rgba(90,150,245,0.9)'],
+      ['rgba(255,255,255,0.98)', 'rgba(214,214,214,0.9)'],
+      ['rgba(236,236,236,0.98)', 'rgba(198,198,198,0.9)'],
+      ['rgba(248,248,248,0.98)', 'rgba(206,206,206,0.9)'],
+      ['rgba(224,224,224,0.98)', 'rgba(188,188,188,0.9)'],
     ];
     const [fill, vein] = palette[f];
 
@@ -65,7 +66,8 @@ function makeButterfliesTexture() {
     // Body and head
     ctx.beginPath();
     ctx.ellipse(cx, cy + 5, 2.5, 20, 0, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(6,20,10,0.92)';
+    // Kept dark so the silhouette still reads against the white wings.
+    ctx.fillStyle = 'rgba(10,10,10,0.92)';
     ctx.fill();
     ctx.beginPath();
     ctx.arc(cx, cy - 8, 3.5, 0, Math.PI * 2);
