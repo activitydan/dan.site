@@ -6,8 +6,8 @@ export default function Hero() {
       <p className="hero-elem hero-subtitle font-mono uppercase">
         System Architect & AI-Augmented Developer
       </p>
-      <h1 className="hero-elem hero-title-1 uppercase text-glow-intense glitch-wrapper" data-text="CREATIVE">
-        CREATIVE
+      <h1 className="hero-elem hero-title-1 uppercase text-glow-intense glitch-wrapper" data-text="WEB">
+        WEB
       </h1>
       <h1 className="hero-elem hero-title-2 uppercase">DEVELOPER</h1>
       

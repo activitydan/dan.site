@@ -49,8 +49,12 @@ export default function ThreeBackground({ isHeroPage = true }) {
     // GPUs settle on a size they can sustain, fast ones climb to full size.
     const MIN_SCALE = 0.25;
     const MAX_SCALE = 1.0;
-    const GPU_BUDGET_MS = 8;
-    let renderScale = isLowPowerDevice ? 0.35 : 0.5;
+    // Two thirds of a 60fps frame. The raymarch is the only thing on the page
+    // costing real GPU time, so it can claim more than the 8ms this used to
+    // reserve; the controller below still backs off on hardware that cannot
+    // keep up, so the ceiling only raises quality where there is headroom.
+    const GPU_BUDGET_MS = 11;
+    let renderScale = isLowPowerDevice ? 0.45 : 0.7;
 
     try {
       renderer = new THREE.WebGLRenderer({
@@ -150,10 +154,33 @@ export default function ThreeBackground({ isHeroPage = true }) {
     });
     fsScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fsMat));
 
+    // Framing: the raymarch fills the viewport, so the hole's apparent size is
+    // set by camera distance alone. A portrait phone sees a far narrower slice
+    // of the scene than a desktop window does at the same distance, which crops
+    // the accretion disk into two arcs running off the left and right edges.
+    // Below the mobile breakpoint the camera pulls back until the disk's width
+    // fits the screen, and the cap keeps it from shrinking to a dot on a very
+    // tall viewport.
+    const MOBILE_BREAKPOINT = 768;
+    const BASE_RADIUS = 24.0;
+    const BASE_INCLINATION = THREE.MathUtils.degToRad(2.5);
+    const TAN_HALF_FOV = Math.tan(THREE.MathUtils.degToRad(FIXED_PARAMS.fov) / 2);
+    const MOBILE_HALF_WIDTH = 12.5;
+    const MAX_RADIUS = 85.0;
+
+    const computeOrbitRadius = () => {
+      if (window.innerWidth > MOBILE_BREAKPOINT) return BASE_RADIUS;
+      const aspect = window.innerWidth / Math.max(window.innerHeight, 1);
+      const fit = MOBILE_HALF_WIDTH / (TAN_HALF_FOV * Math.max(aspect, 0.3));
+      return THREE.MathUtils.clamp(fit, BASE_RADIUS, MAX_RADIUS);
+    };
+
+    let orbitRadius = computeOrbitRadius();
+
     // Observer Camera: fixed home view, centred at yaw 0° and pitch 2.5°.
     // This keeps the accretion disk horizontal, like the chosen reference.
     const camera = new THREE.PerspectiveCamera(FIXED_PARAMS.fov, window.innerWidth / window.innerHeight, 0.01, 200);
-    camera.position.set(0, 1.05, 23.98);
+    camera.position.set(0, orbitRadius * Math.sin(BASE_INCLINATION), orbitRadius * Math.cos(BASE_INCLINATION));
     camera.lookAt(0, 0, 0);
 
     // OrbitControls for interactive double-click exploration
@@ -192,7 +219,10 @@ export default function ThreeBackground({ isHeroPage = true }) {
         uLowRes: { value: new THREE.Vector2(2, 2) },
         uJitter: { value: new THREE.Vector2(0, 0) },
         uSharp: { value: 1 },
-        uBlend: { value: 0.4 },
+        // Lower weight per sample means the history converges over more
+        // frames, so the supersampled image it settles on is cleaner. Fast
+        // camera moves bypass this through uReset, so nothing ghosts.
+        uBlend: { value: 0.28 },
         uReset: { value: 1 },
       },
       depthTest: false,
@@ -333,9 +363,15 @@ export default function ThreeBackground({ isHeroPage = true }) {
       const sigma = 0.7 * rw / histW;
       accumMaterial.uniforms.uSharp.value = 1 / (2 * sigma * sigma);
       // The finest disk detail only shows once the buffer is large enough to
-      // resolve it; below that the extra noise octaves are wasted work.
-      if (renderScale >= 0.5) uniforms.uOctaves.value = 5;
-      else if (renderScale < 0.4) uniforms.uOctaves.value = 3;
+      // resolve it; below that the extra noise octaves are wasted work. Keying
+      // off the buffer's own width rather than the scale factor means a
+      // high-DPI screen that settles on a small scale still gets the detail its
+      // pixel count can show, and leaves no scale with an undefined octave
+      // count the way the two-branch version did between 0.4 and 0.5.
+      if (rw >= 1600) uniforms.uOctaves.value = 6;
+      else if (rw >= 760) uniforms.uOctaves.value = 5;
+      else if (rw >= 420) uniforms.uOctaves.value = 4;
+      else uniforms.uOctaves.value = 3;
     };
 
     const setRenderScale = (next) => {
@@ -348,9 +384,14 @@ export default function ThreeBackground({ isHeroPage = true }) {
     const handleResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
+      // Orientation changes and tablet-width windows re-frame the shot; the
+      // camera lerps to the new distance in the loop below, so it never jumps.
+      orbitRadius = computeOrbitRadius();
       // The canvas stays at (capped) native resolution so the composite pass
       // keeps vignette and grain crisp; only the raymarch buffer shrinks.
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.0);
+      // Past 1.0 the composite pass, and the history it samples, resolve the
+      // disk's fine structure instead of upscaling a canvas-sized image.
+      const dpr = Math.min(window.devicePixelRatio || 1, isLowPowerDevice ? 1.0 : 1.5);
 
       renderer.setPixelRatio(dpr);
       renderer.setSize(w, h, false);
@@ -363,7 +404,7 @@ export default function ThreeBackground({ isHeroPage = true }) {
 
       // History at canvas resolution, capped so a 4K screen does not pay for
       // an accumulate pass four times the size of a 1080p one.
-      const histScale = Math.min(1, 1920 / Math.max(_dbSize.x, _dbSize.y));
+      const histScale = Math.min(1, 2560 / Math.max(_dbSize.x, _dbSize.y));
       histW = Math.max(1, Math.round(_dbSize.x * histScale));
       histH = Math.max(1, Math.round(_dbSize.y * histScale));
       histRead.setSize(histW, histH);
@@ -434,10 +475,10 @@ export default function ThreeBackground({ isHeroPage = true }) {
         smoothMouseX += (mouseX - smoothMouseX) * 0.05;
         smoothMouseY += (mouseY - smoothMouseY) * 0.05;
 
-        const radius = 24.0;
+        const radius = orbitRadius;
         const baseAngle = 0; // Centered horizontal yaw: 0°
         const curAzimuth = baseAngle + smoothMouseX * 0.035;
-        const baseInc = THREE.MathUtils.degToRad(2.5);
+        const baseInc = BASE_INCLINATION;
         const curInclination = THREE.MathUtils.clamp(baseInc - smoothMouseY * 0.025, 0.01, 0.16);
 
         const targetX = radius * Math.cos(curInclination) * Math.sin(curAzimuth);
