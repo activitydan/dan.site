@@ -98,7 +98,7 @@ export async function onRequestPost(context) {
           <div class="field-label">Message Payload</div>
           <div class="message-box">${safeMessage}</div>
           <div class="footer">
-            Dispatched from Dinesh Portfolio Beacon • ${new Date().toUTCString()}
+            Dispatched from Dan Portfolio Beacon • ${new Date().toUTCString()}
           </div>
         </div>
       </body>

@@ -135,7 +135,7 @@ export default function Navbar({ isHeroPage }) {
           onClick={playClickSound}
           style={{ textDecoration: 'none', color: '#fff', fontSize: '1.5rem', fontWeight: 900, letterSpacing: '0.1em' }}
         >
-          <ConvexText text="DINESH" />
+          <ConvexText text="DAN" />
         </Link>
       </div>
 
@@ -185,7 +185,7 @@ export default function Navbar({ isHeroPage }) {
             className="mobile-brand-link font-mono uppercase text-glow"
             onClick={() => { playClickSound(); setMobileMenuOpen(false); }}
           >
-            Dinesh
+            Dan
           </Link>
 
           {/* Desktop Navigation Links */}

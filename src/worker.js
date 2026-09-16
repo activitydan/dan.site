@@ -105,7 +105,7 @@ export default {
               <div class="field-label">Message Payload</div>
               <div class="message-box">${safeMessage}</div>
               <div class="footer">
-                Dispatched from Dinesh Portfolio Beacon • ${new Date().toUTCString()}
+                Dispatched from Dan Portfolio Beacon • ${new Date().toUTCString()}
               </div>
             </div>
           </body>
@@ -186,7 +186,7 @@ export default {
 
       try {
         const ghHeaders = {
-          'User-Agent': 'Dinesh-Portfolio-Cloudflare-Worker/1.0',
+          'User-Agent': 'Dan-Portfolio-Cloudflare-Worker/1.0',
           Accept: 'application/vnd.github.v3+json',
         };
 

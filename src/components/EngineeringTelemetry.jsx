@@ -1,5 +1,5 @@
 import { useAudio } from '../hooks/useAudio';
-import dineshPhoto from '../assets/MYphoto.jpeg';
+import danPhoto from '../assets/MYphoto.jpeg';
 
 export default function EngineeringTelemetry() {
   const { playHoverSound, playClickSound } = useAudio();
@@ -68,13 +68,13 @@ export default function EngineeringTelemetry() {
           {/* Clean LinkedIn Identity Preview */}
           <div className="linkedin-profile-preview">
             <img
-              src={dineshPhoto}
-              alt="Dinesh S"
+              src={danPhoto}
+              alt="Dan"
               className="linkedin-preview-avatar"
             />
             <div className="linkedin-preview-info">
               <div className="linkedin-preview-name">
-                <span>Dinesh S</span>
+                <span>Dan</span>
                 <span className="linkedin-check" title="Verified Profile">✓</span>
               </div>
               <div className="linkedin-preview-role text-gray">
