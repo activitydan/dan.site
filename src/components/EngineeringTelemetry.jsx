@@ -1,8 +1,10 @@
 import { useAudio } from '../hooks/useAudio';
 import danPhoto from '../assets/MYphoto.jpeg';
+import { useLanguage } from '../i18n/context';
 
 export default function EngineeringTelemetry() {
   const { playHoverSound, playClickSound } = useAudio();
+  const { t } = useLanguage();
 
   return (
     <div className="telemetry-command-deck gsap-reveal font-label">
@@ -23,9 +25,9 @@ export default function EngineeringTelemetry() {
             <span className="card-badge">CURRENT FOCUS</span>
             <span className="card-indicator">Active</span>
           </div>
-          <h3 className="telemetry-card-title">AI-Augmented Systems</h3>
+          <h3 className="telemetry-card-title">{t('telemetry.focus.title')}</h3>
           <p className="telemetry-card-text text-gray">
-            Architecting decoupled full-stack systems, designing component and API contracts, and directing generative AI co-pilots for rapid code implementation.
+            {t('telemetry.focus.text')}
           </p>
           <div className="telemetry-meta-row text-gray">
             <span>CORE STACK:</span>
@@ -39,9 +41,9 @@ export default function EngineeringTelemetry() {
             <span className="card-badge">GITHUB CODE</span>
             <span className="card-indicator">10+ Repositories</span>
           </div>
-          <h3 className="telemetry-card-title">System Architectures</h3>
+          <h3 className="telemetry-card-title">{t('telemetry.github.title')}</h3>
           <p className="telemetry-card-text text-gray">
-            Over 10 public and private repositories—architected from concept to edge deployment, featuring ATS analyzers, WebSockets, and AI tools.
+            {t('telemetry.github.text')}
           </p>
           <div className="telemetry-actions-list">
             <a
@@ -78,13 +80,13 @@ export default function EngineeringTelemetry() {
                 <span className="linkedin-check" title="Verified Profile">✓</span>
               </div>
               <div className="linkedin-preview-role text-gray">
-                AI-Native Developer • 4th-Year AIML
+                {t('telemetry.profile.role')}
               </div>
             </div>
           </div>
 
           <p className="telemetry-card-text text-gray" style={{ marginBottom: '1rem' }}>
-            Open for full-stack engineering roles, AI-assisted development, and modern cloud deployment projects.
+            {t('telemetry.profile.text')}
           </p>
 
           <div className="telemetry-actions-list">

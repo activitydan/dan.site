@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAudio } from '../hooks/useAudio';
 import {
   WebArchitectureCanvas,
@@ -7,23 +7,23 @@ import {
   EdgeResumeATSParserCanvas
 } from './TimelineVisualizers';
 import MaskedTitle from './MaskedTitle';
+import { useLanguage } from '../i18n/context';
 
 export default function Timeline() {
   const { playHoverSound, playClickSound } = useAudio();
   const [activeEpochIndex, setActiveEpochIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const { t } = useLanguage();
 
-  const epochs = [
+  // Titles, headlines and summaries come from the translation catalogue; what
+  // stays here is the language-independent data for each stage.
+  const epochData = [
     {
       epoch: '01',
       date: 'DEC 2025 – MAR 2026',
       stageLabel: 'STAGE 01',
       category: 'THE SPARK',
       dockLabel: 'FOUNDATIONS',
-      title: 'Web Foundations & Core Logic',
-      headline: 'HTML5, CSS3 & Programming Basics',
-      summary:
-        'Started exploring programming logic and web development in December 2025. Mastered core frontend structure with HTML5, CSS3, and modern CSS, while building foundational problem-solving skills in Java, JavaScript, and Python.',
       metrics: [
         { label: 'Timeline', value: 'Dec 2025 – Mar 2026' },
         { label: 'Focus', value: 'Web Foundations' },
@@ -38,10 +38,6 @@ export default function Timeline() {
       stageLabel: 'STAGE 02',
       category: 'REAL-TIME SPRINT',
       dockLabel: '5-DAY SPRINT',
-      title: 'ChatUp: Real-Time Messaging App',
-      headline: 'Architected & Shipped in 5 Days',
-      summary:
-        'Architected and delivered ChatUp in an intensive 5-day build sprint in June 2026. Designed the full-duplex WebSocket architecture and MongoDB schemas, directing AI code generation to implement Socket.io channels with sub-25ms response times.',
       metrics: [
         { label: 'Sprint Speed', value: '5 Days (June 2026)' },
         { label: 'Latency', value: '< 25ms Ping' },
@@ -56,10 +52,6 @@ export default function Timeline() {
       stageLabel: 'STAGE 03',
       category: 'APPLIED GENAI SPRINT',
       dockLabel: '3-DAY SPRINT',
-      title: 'Roasting AI: LLM Generator',
-      headline: 'Engineered & Shipped in 3 Days',
-      summary:
-        'Engineered and deployed Roasting AI in a rapid 3-day sprint in June 2026. Structured multi-shot comedic prompt schemas for Google Gemini API, implemented streaming token responses in React, and built resilient fallback logic for instant comedic roasts.',
       metrics: [
         { label: 'Sprint Speed', value: '3 Days (June 2026)' },
         { label: 'AI Engine', value: 'Google Gemini API' },
@@ -74,10 +66,6 @@ export default function Timeline() {
       stageLabel: 'STAGE 04',
       category: 'CLOUD & EDGE SAAS',
       dockLabel: 'PROD SAAS',
-      title: 'AI Resume Builder & Cloudflare Edge',
-      headline: 'Decoupled Next.js SaaS & OAuth 2.0',
-      summary:
-        'Architected and shipped an edge-deployed SaaS platform in 2026. Decoupled the Next.js presentation layer on Cloudflare Pages from an Express/PostgreSQL backend API, securing auth via Google OAuth 2.0 PKCE and directing Gemini AI for real-time ATS resume scoring.',
       metrics: [
         { label: 'Edge TTFB', value: '< 85ms Latency' },
         { label: 'Security', value: 'Google OAuth 2.0' },
@@ -87,6 +75,14 @@ export default function Timeline() {
       Visualizer: EdgeResumeATSParserCanvas
     }
   ];
+
+  const epochs = useMemo(
+    () => epochData.map((epoch, i) => ({ ...epoch, ...t('timeline.items')[i] })),
+    // epochData is rebuilt every render and holds only static values, so the
+    // language is the only thing that can actually change the result.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t],
+  );
 
   // Auto-running loop across 4 stages (pauses on hover so user can read)
   useEffect(() => {

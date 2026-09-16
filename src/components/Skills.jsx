@@ -1,54 +1,45 @@
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAudio } from '../hooks/useAudio';
 import MaskedTitle from './MaskedTitle';
+import { useLanguage } from '../i18n/context';
 
-const categories = [
+// Only the parts that do not change with the language. Titles and summaries
+// come from the translation catalogue and are merged in below.
+const categoryData = [
   {
     id: '01',
     tag: 'CORE UI ENGINEERING',
-    title: 'Frontend & UI Craft (Hands-On)',
-    summary: 'Responsive layouts, component structure, clean styling, and high-fidelity user experiences.',
     telemetry: '80% Proficiency • Pixel Precision',
     skills: ['HTML5', 'CSS3 Layouts', 'Tailwind CSS', 'Responsive UI', 'JavaScript Basics', 'React Basics']
   },
   {
     id: '02',
     tag: 'AI-AUGMENTED ENGINEERING',
-    title: 'Generative AI & Prompt Design',
-    summary: 'Architecting precision prompt schemas, directing LLMs for code synthesis, and sub-second streaming.',
     telemetry: 'Gemini API • Prompt Schemas',
     skills: ['Prompt Engineering', 'AI-Augmented Coding', 'Google Gemini API', 'Token Streaming', 'Code Synthesis', 'Rapid Sprints']
   },
   {
     id: '03',
     tag: 'SYSTEM ARCHITECTURE',
-    title: 'System Design & Data Flows',
-    summary: 'Decoupled presentation layers, client-server models, RESTful contracts, and WebSocket protocols.',
     telemetry: 'Decoupled Edge • Sub-85ms TTFB',
     skills: ['Decoupled Architecture', 'System Design', 'RESTful APIs', 'WebSocket Flows', 'Data Contracts', 'Authentication PKCE']
   },
   {
     id: '04',
     tag: 'EDGE & CLOUD RUNTIMES',
-    title: 'Cloud & Edge Deployments',
-    summary: 'Edge-distributed static hosting, continuous deployment, serverless edge workers, and DNS routing.',
     telemetry: 'Cloudflare Pages • Edge Workers',
     skills: ['Cloudflare Pages', 'Cloudflare Workers', 'Vercel', 'Git', 'GitHub', 'CI/CD Deployments']
   },
   {
     id: '05',
     tag: 'FRAMEWORKS DIRECTED WITH AI',
-    title: 'Full-Stack Frameworks',
-    summary: 'Frameworks architected and synthesized using modern AI-assisted engineering workflows.',
     telemetry: 'AI-Accelerated • Full Stack',
     skills: ['Next.js', 'Node.js', 'Express.js', 'Socket.io', 'MongoDB Atlas', 'PostgreSQL • Prisma']
   },
   {
     id: '06',
     tag: 'PROBLEM SOLVING CORE',
-    title: 'Programming Foundations',
-    summary: 'Foundational computer science principles, OOP concepts, algorithm basics, and schema comprehension.',
     telemetry: 'OOP Basics • Schema Design',
     skills: ['Java (OOP)', 'JavaScript Foundations', 'Python Basics', 'Database Concepts', 'Data Structures Basics']
   }
@@ -56,6 +47,11 @@ const categories = [
 
 export default function Skills() {
   const { playHoverSound, playClickSound } = useAudio();
+  const { t } = useLanguage();
+  const categories = useMemo(
+    () => categoryData.map((cat, i) => ({ ...cat, ...t('skills.categories')[i] })),
+    [t],
+  );
   const carouselStageRef = useRef(null);
 
   // Rotation angle in degrees (continuous auto-running motion)

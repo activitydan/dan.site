@@ -2,10 +2,12 @@ import { useState, useRef, useMemo } from 'react';
 import { useAudio } from '../hooks/useAudio';
 import Footer from './Footer';
 import MaskedTitle from './MaskedTitle';
+import { useLanguage } from '../i18n/context';
 
 export default function Contact() {
   const monolithRef = useRef(null);
   const { playHoverSound, playClickSound } = useAudio();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     senderName: '',
@@ -29,11 +31,11 @@ export default function Contact() {
   }, [formData]);
 
   const signalTelemetry = useMemo(() => {
-    if (signalPercentage === 0) return 'Awaiting your details';
-    if (signalPercentage < 70) return 'In progress';
-    if (signalPercentage < 100) return 'Almost ready';
-    return 'Ready to send';
-  }, [signalPercentage]);
+    if (signalPercentage === 0) return t('contact.signal.awaiting');
+    if (signalPercentage < 70) return t('contact.signal.progress');
+    if (signalPercentage < 100) return t('contact.signal.almost');
+    return t('contact.signal.ready');
+  }, [signalPercentage, t]);
 
   // Dynamic starlight specular rim-glow tracking mouse coordinates
   const handleMouseMove = (e) => {
@@ -57,7 +59,7 @@ export default function Contact() {
     playClickSound();
 
     if (!formData.senderName || !formData.senderMessage) {
-      setStatusMsg('Please enter your name and message.');
+      setStatusMsg(t('contact.validation'));
       return;
     }
 
@@ -110,7 +112,7 @@ export default function Contact() {
           .catch((err) => {
             setTimeout(() => {
               setSendState('idle');
-              setStatusMsg(err.message || 'Transmission failed. Please try again or use direct email.');
+              setStatusMsg(err.message || t('contact.failure'));
             }, 500);
           });
       }
@@ -142,7 +144,7 @@ export default function Contact() {
             <div className="divider centered" />
 
             <p className="contact-lead centered text-gray">
-              Have a project idea, a full-stack challenge, or an engineering opportunity to discuss? Send a direct message below.
+              {t('contact.lead')}
             </p>
           </div>
 
@@ -171,10 +173,10 @@ export default function Contact() {
                 <div className="launch-counter-overlay">
                   <div className="launch-counter-value text-glow">{launchProgress}%</div>
                   <div className="launch-status-subtext font-label text-gray">
-                    {launchProgress < 30 && 'Preparing flight trajectory...'}
-                    {launchProgress >= 30 && launchProgress < 75 && 'Gliding across communications channel...'}
-                    {launchProgress >= 75 && launchProgress < 100 && 'Approaching destination...'}
-                    {launchProgress === 100 && 'Transmission Delivered!'}
+                    {launchProgress < 30 && t('contact.flight')[0]}
+                    {launchProgress >= 30 && launchProgress < 75 && t('contact.flight')[1]}
+                    {launchProgress >= 75 && launchProgress < 100 && t('contact.flight')[2]}
+                    {launchProgress === 100 && t('contact.flight')[3]}
                   </div>
 
                   {/* Progress Line */}
@@ -291,7 +293,7 @@ export default function Contact() {
                 <div className="sent-success-icon-wrap">
                   <span className="sent-success-check">✓</span>
                 </div>
-                <h3 className="sent-success-title text-glow uppercase">Message Dispatched</h3>
+                <h3 className="sent-success-title text-glow uppercase">{t('contact.successTitle')}</h3>
                 <p className="sent-success-desc text-gray">
                   Thank you, <span style={{ color: '#ffffff' }}>{formData.senderName}</span>! Your message has launched successfully. I’ll review your details and get back to you shortly.
                 </p>
@@ -333,7 +335,7 @@ export default function Contact() {
                       id="sender-name"
                       type="text"
                       className="field-input hoverable"
-                      placeholder="e.g. Alex Mercer"
+                      placeholder={t('contact.placeholderName')}
                       value={formData.senderName}
                       onFocus={playHoverSound}
                       onChange={(e) => setFormData({ ...formData, senderName: e.target.value })}
@@ -349,7 +351,7 @@ export default function Contact() {
                       id="sender-email"
                       type="email"
                       className="field-input hoverable"
-                      placeholder="alex@company.com"
+                      placeholder={t('contact.placeholderEmail')}
                       value={formData.senderEmail}
                       onFocus={playHoverSound}
                       onChange={(e) => setFormData({ ...formData, senderEmail: e.target.value })}
@@ -363,7 +365,7 @@ export default function Contact() {
                     <textarea
                       id="sender-message"
                       className="field-input field-textarea hoverable"
-                      placeholder="Describe your project, timeline, or engineering goals..."
+                      placeholder={t('contact.placeholderMessage')}
                       rows={4}
                       value={formData.senderMessage}
                       onFocus={playHoverSound}
@@ -410,7 +412,7 @@ export default function Contact() {
             </div>
 
             <div className="orbit-availability-tag text-gray">
-              <span>Available for new projects & opportunities</span>
+              <span>{t('contact.availability')}</span>
             </div>
           </div>
         </div>

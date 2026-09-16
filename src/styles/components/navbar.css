@@ -133,17 +133,6 @@ nav.dock-mode .nav-inner {
     gap: 1.5rem;
   }
 
-  .sound-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #fff;
-    font-size: inherit;
-  }
-
   .mobile-brand-link {
     display: none;
     text-decoration: none;
@@ -354,4 +343,68 @@ nav.dock-mode .nav-inner {
   justify-content: space-between;
   font-size: 0.7rem;
   letter-spacing: 0.1em;
+}
+
+/* Site-wide switches: language and sound. They live in their own glass pill
+   at the top right, where the resume link used to be, deliberately outside
+   the navigation dock — the dock takes you somewhere, these two change how
+   the whole site behaves. */
+.site-controls {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(8, 8, 8, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+.site-controls-inline {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.site-control-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.875rem;
+  letter-spacing: 2px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease;
+}
+
+.site-control-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.site-controls-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.18);
+  flex: none;
+}
+
+/* Below the dock's breakpoint the floating pill would overlap it, so the
+   controls swap to the copy that renders inside the dock. */
+@media (max-width: 768px) {
+  .site-controls {
+    display: none;
+  }
+
+  .site-controls-inline {
+    display: inline-flex;
+  }
 }

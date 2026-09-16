@@ -8,11 +8,13 @@ import Navbar from './Navbar';
 import CustomCursor from './CustomCursor';
 import usePageTransitions from '../hooks/usePageTransitions';
 import { useLenis, resetLenis, stopLenis } from '../hooks/useLenis';
+import { useLanguage } from '../i18n/context';
 
 import ThreeStarfield from './ThreeStarfield';
 import Butterflies from './Butterflies';
 
 export default function Layout({ isPreloaderDone }) {
+  const { t } = useLanguage();
   useLenis();
   const navigate = useNavigate();
   const location = useLocation();
@@ -198,7 +200,7 @@ export default function Layout({ isPreloaderDone }) {
             className="scroll-hint scroll-hint-bottom font-label text-gray hoverable"
             style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer' }}
           >
-            Scroll down or click for next section ({nextRoute.slice(1)}) <span className="scroll-arrow">↓</span>
+            {t('layout.scrollHint')} ({nextRoute.slice(1)}) <span className="scroll-arrow">↓</span>
           </button>
         )}
       </main>

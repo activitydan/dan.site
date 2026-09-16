@@ -1,9 +1,12 @@
 import danPhoto from '../assets/MYphoto.jpeg';
+import { useLanguage } from '../i18n/context';
 import EngineeringTelemetry from './EngineeringTelemetry';
 import Timeline from './Timeline';
 import MaskedTitle from './MaskedTitle';
 
 export default function About() {
+  const { t } = useLanguage();
+
   return (
     <div className="about-page-wrapper">
       {/* 1. Core Background & Engineering Philosophy */}
@@ -13,7 +16,7 @@ export default function About() {
             <MaskedTitle number="1." text="About Me" />
             <div className="divider" />
             <p className="text-gray about-text">
-              I’m Dan, an AI-Native Full Stack Developer and 4th-year AIML student specializing in architecture-driven, AI-augmented engineering. Rather than spending weeks writing boilerplate code by hand, I operate at the architectural level: designing decoupled system flows, data schemas, API contracts, and responsive UI layouts with HTML, CSS, and Tailwind. By directing generative AI as an engineering co-pilot, I synthesize, debug, and deploy production-ready cloud applications to Cloudflare Pages and Vercel at rapid sprint velocities.
+              {t('about.bio')}
             </p>
             <div className="font-label text-gray skill-list text-sm">
               <p><span style={{ color: '#fff' }}></span> System Architecture & Data Flows</p>

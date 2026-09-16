@@ -2,6 +2,7 @@
 import { useMemo, useState } from 'react';
 import ProjectModal from './ProjectModal';
 import MaskedTitle from './MaskedTitle';
+import { useLanguage } from '../i18n/context';
 
 import chatup1 from '../assets/chatup-1.webp';
 import chatup2 from '../assets/chatup-2.webp';
@@ -18,19 +19,17 @@ import resume3 from '../assets/resume3.webp';
 export default function Work() {
   const [activeProjectIndex, setActiveProjectIndex] = useState(null);
 
-  const projects = useMemo(
+  const { t } = useLanguage();
+
+  // Only the language-independent data lives here. Every piece of prose comes
+  // from the translation catalogue and is merged in below, so a project's copy
+  // and its assets never drift apart.
+  const projectData = useMemo(
     () => [
       {
         bgClass: 'bg-3',
         shortTitle: 'AI Resume Builder',
-        category: 'SAAS • SYSTEM ARCHITECTURE • AI DIRECTION',
-        tagline: 'AI-Powered Resume Builder & ATS Analyzer',
-        description:
-          'A production-ready SaaS platform that transforms PDFs into ATS-optimized resumes. Architected with a decoupled model combining a Next.js edge frontend on Cloudflare Pages with an Express/PostgreSQL backend, secured by Google OAuth 2.0 and synthesized with AI pair-programming.',
-        problem:
-          'Opaque Applicant Tracking Systems (ATS) reject up to 75% of qualified resumes due to parsing mismatches. Job seekers face manual reformatting and lack real-time algorithmic guidance on keyword resonance.',
-        solution:
-          'Architected an edge-deployed SaaS application combining Next.js, Cloudflare Pages, and Google Gemini API. Structured the PDF parsing pipeline, semantic ATS scoring algorithms, and directed AI co-pilots to build the production codebase.',
+        category: 'SAAS \u2022 SYSTEM ARCHITECTURE \u2022 AI DIRECTION',
         techStack: [
           'Next.js',
           'Express',
@@ -40,22 +39,11 @@ export default function Work() {
           'Gemini API',
           'Cloudflare Pages'
         ],
-        features: [
-          'PDF parsing & ATS optimization',
-          'Decoupled Next.js edge frontend',
-          'Secure Google OAuth 2.0 & JWTs',
-          'Gemini AI resume enhancement'
-        ],
         architectureFlow: [
-          { step: '01', title: 'Edge Client', tech: 'Next.js • Cloudflare', desc: 'Static edge routing & sub-85ms asset delivery' },
-          { step: '02', title: 'Auth Gateway', tech: 'Google OAuth 2.0', desc: 'PKCE authentication with encrypted session JWTs' },
-          { step: '03', title: 'API Microservice', tech: 'Node.js • Express', desc: 'Secure PDF parsing, rate-limiting & schema validation' },
-          { step: '04', title: 'Intelligence & Store', tech: 'Gemini Flash • PostgreSQL', desc: 'Real-time ATS scoring & Prisma connection pooling' },
-        ],
-        architectureDetails: [
-          { title: 'Decoupled Edge Performance', desc: 'Separated the presentation layer on Cloudflare Pages from the compute-intensive PDF parser, ensuring lightning-fast initial page loads and global low latency.' },
-          { title: 'Deterministic AI Prompting', desc: 'Engineered strict JSON schema prompts for Google Gemini API to eliminate hallucinations and extract structured resume data consistently.' },
-          { title: 'Enterprise Data Security', desc: 'Zero persistence of raw resumes; resumes are parsed in memory, scored, and returned with HTTP-only cryptographic session cookies.' },
+          { step: '01', tech: 'Next.js \u2022 Cloudflare' },
+          { step: '02', tech: 'Google OAuth 2.0' },
+          { step: '03', tech: 'Node.js \u2022 Express' },
+          { step: '04', tech: 'Gemini Flash \u2022 PostgreSQL' },
         ],
         metrics: [
           { label: 'Edge TTFB', value: '< 85ms' },
@@ -72,31 +60,13 @@ export default function Work() {
       {
         bgClass: 'bg-1',
         shortTitle: 'ChatUp',
-        category: 'REAL-TIME ARCHITECTURE • FULL STACK',
-        tagline: 'Real-Time Web Chat Application',
-        description:
-          'A modern real-time chatting platform built on full-duplex WebSocket channels. Designed the event-driven system architecture and MongoDB schemas, guiding AI code synthesis to deliver instantaneous messaging with sub-25ms response times.',
-        problem:
-          'Standard HTTP polling solutions generate heavy server traffic and cause delayed message delivery, breaking conversational fluidity and draining mobile device batteries.',
-        solution:
-          'Designed a full-duplex WebSocket communication engine with Socket.io and Express.js, architecting optimistic UI rendering, automatic connection heartbeat recovery, and persistent MongoDB chat storage.',
+        category: 'REAL-TIME ARCHITECTURE \u2022 FULL STACK',
         techStack: ['React', 'Node.js', 'Express.js', 'Socket.io', 'MongoDB'],
-        features: [
-          'Real-time messaging',
-          'Responsive interface',
-          'Fast communication',
-          'Modern chat experience'
-        ],
         architectureFlow: [
-          { step: '01', title: 'Reactive Client', tech: 'React • State Sync', desc: 'Instant optimistic UI updates with zero input lag' },
-          { step: '02', title: 'WebSocket Gateway', tech: 'Socket.io Cluster', desc: 'Full-duplex bidirectional channels with heartbeats' },
-          { step: '03', title: 'Event Broker', tech: 'Node.js • Express API', desc: 'Token-based socket authentication & handshake validation' },
-          { step: '04', title: 'Persistent History', tech: 'MongoDB Atlas', desc: 'Indexed conversation threads & compound sorting' },
-        ],
-        architectureDetails: [
-          { title: 'Full-Duplex Socket Engine', desc: 'Implemented bi-directional event transport that reduces server CPU load by 80% compared to traditional long-polling.' },
-          { title: 'Optimistic UI Pipeline', desc: 'Messages render instantly in the client interface before server confirmation, with rollback handlers on network interruption.' },
-          { title: 'Resilient Connection State', desc: 'Configured exponential backoff re-connection protocols for seamless message catch-up across dropped mobile connections.' },
+          { step: '01', tech: 'React \u2022 State Sync' },
+          { step: '02', tech: 'Socket.io Cluster' },
+          { step: '03', tech: 'Node.js \u2022 Express API' },
+          { step: '04', tech: 'MongoDB Atlas' },
         ],
         metrics: [
           { label: 'Socket Ping', value: '< 25ms' },
@@ -113,31 +83,13 @@ export default function Work() {
       {
         bgClass: 'bg-2',
         shortTitle: 'AI Roast Generator',
-        category: 'APPLIED GENAI • PROMPT ARCHITECTURE',
-        tagline: 'AI-Powered Roast Generator',
-        description:
-          'An interactive AI web application demonstrating precision prompt engineering and sub-second token streaming. Architected multi-shot persona prompts and structured client-side stream rendering using Google Gemini API.',
-        problem:
-          'Standard LLM prompts generate generic, sterile humor. Achieving sharp, dynamic, context-aware satire requires precise multi-shot system prompt framing, input sanitization, and sub-second token streaming.',
-        solution:
-          'Architected an interactive AI web experience leveraging Gemini API with dynamic few-shot system prompts, personality archetype switching, and low-latency token streaming for high-impact comedic punchlines.',
+        category: 'APPLIED GENAI \u2022 PROMPT ARCHITECTURE',
         techStack: ['React', 'Node.js', 'Gemini API'],
-        features: [
-          'AI-generated responses',
-          'Prompt engineering',
-          'Instant roast generation',
-          'Interactive UI'
-        ],
         architectureFlow: [
-          { step: '01', title: 'Kinetic Client', tech: 'React • Glassmorphism', desc: 'Vibrant interactive prompt interface with real-time feedback' },
-          { step: '02', title: 'Prompt Sanitizer', tech: 'Edge Middleware', desc: 'Input validation and content moderation checks' },
-          { step: '03', title: 'Humor Engine', tech: 'Google Gemini API', desc: 'Dynamic few-shot system prompt framing with archetype tuning' },
-          { step: '04', title: 'Stream Renderer', tech: 'Chunked Stream', desc: 'Sub-second token delivery with kinetic text typing effects' },
-        ],
-        architectureDetails: [
-          { title: 'Multi-Shot Prompt Framing', desc: 'Curated specialized comedic personas with tailored few-shot exemplars to produce razor-sharp humor consistently.' },
-          { title: 'Sub-Second Streaming', desc: 'Configured streaming token endpoints to eliminate loading spinners and deliver punchlines character by character.' },
-          { title: 'Zero Cold-Start Latency', desc: 'Deployed on lightweight serverless edge infrastructure ensuring instantaneous response times.' },
+          { step: '01', tech: 'React \u2022 Glassmorphism' },
+          { step: '02', tech: 'Edge Middleware' },
+          { step: '03', tech: 'Google Gemini API' },
+          { step: '04', tech: 'Chunked Stream' },
         ],
         metrics: [
           { label: 'First Token Latency', value: '< 620ms' },
@@ -153,6 +105,23 @@ export default function Work() {
       }
     ],
     []
+  );
+
+  const projects = useMemo(
+    () => {
+      const copy = t('work.projects');
+      return projectData.map((proj, i) => ({
+        ...proj,
+        ...copy[i],
+        // Flow nodes keep their step number and tech label from the data above
+        // and take only the wording from the catalogue.
+        architectureFlow: proj.architectureFlow.map((node, n) => ({
+          ...node,
+          ...copy[i].architectureFlow[n],
+        })),
+      }));
+    },
+    [projectData, t]
   );
 
   const activeProject = activeProjectIndex === null ? null : projects[activeProjectIndex];

@@ -1,4 +1,5 @@
 import useTextScramble from '../hooks/useTextScramble';
+import { useLanguage } from '../i18n/context';
 
 function ScrambleLink({ href, children, className, ...props }) {
   const { displayText, onMouseEnter, onMouseLeave } = useTextScramble(children);
@@ -16,10 +17,12 @@ function ScrambleLink({ href, children, className, ...props }) {
 }
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer>
       <div className="container footer-inner font-label text-gray">
-        <p>© 2026 BUILD WITH DAN. All systems operational.</p>
+        <p>{t('footer.copyright')}</p>
         <div className="social-links uppercase">
           <ScrambleLink href="https://github.com/DineshS36" className="hoverable" target="_blank" rel="noopener noreferrer">Github</ScrambleLink>
           <ScrambleLink href="https://www.linkedin.com/in/dinesh-s-173698390" className="hoverable" target="_blank" rel="noopener noreferrer">LinkedIn</ScrambleLink>
