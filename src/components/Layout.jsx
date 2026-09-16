@@ -10,7 +10,7 @@ import usePageTransitions from '../hooks/usePageTransitions';
 import { useLenis, resetLenis, stopLenis } from '../hooks/useLenis';
 
 import ThreeStarfield from './ThreeStarfield';
-import ThreeBackground from './ThreeBackground';
+import Butterflies from './Butterflies';
 
 export default function Layout({ isPreloaderDone }) {
   useLenis();
@@ -184,7 +184,7 @@ export default function Layout({ isPreloaderDone }) {
     <>
       <CustomCursor />
       <ThreeStarfield isHeroPage={isHeroPage} />
-      <ThreeBackground isHeroPage={isHeroPage} />
+      <Butterflies isHeroPage={isHeroPage} />
 
       <Navbar isHeroPage={isHeroPage} />
       
