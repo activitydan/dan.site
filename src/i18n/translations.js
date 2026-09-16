@@ -16,7 +16,7 @@ export const translations = {
     },
 
     about: {
-      bio: 'Sono Dan, sviluppatore full stack AI-native e studente di AIML al quarto anno, specializzato in ingegneria guidata dall’architettura e potenziata dall’AI. Invece di passare settimane a scrivere codice ripetitivo a mano, lavoro a livello architetturale: progetto flussi di sistema disaccoppiati, schemi dati, contratti API e interfacce responsive con HTML, CSS e Tailwind. Dirigendo l’AI generativa come copilota di sviluppo, realizzo, correggo e pubblico applicazioni cloud pronte per la produzione su Cloudflare Pages e Vercel, con tempi da sprint.',
+      bio: 'Sono Dan, sviluppatore full stack AI-native. Invece di passare settimane a scrivere codice ripetitivo a mano, lavoro a livello architetturale: progetto flussi di sistema disaccoppiati, schemi dati, contratti API e interfacce responsive con HTML, CSS e Tailwind. Dirigendo l’AI generativa come copilota di sviluppo, realizzo, correggo e pubblico applicazioni cloud pronte per la produzione su Cloudflare Pages e Vercel, in tempi ottimizzati.',
     },
 
     telemetry: {
@@ -240,7 +240,7 @@ export const translations = {
     },
 
     about: {
-      bio: 'I’m Dan, an AI-Native Full Stack Developer and 4th-year AIML student specializing in architecture-driven, AI-augmented engineering. Rather than spending weeks writing boilerplate code by hand, I operate at the architectural level: designing decoupled system flows, data schemas, API contracts, and responsive UI layouts with HTML, CSS, and Tailwind. By directing generative AI as an engineering co-pilot, I synthesize, debug, and deploy production-ready cloud applications to Cloudflare Pages and Vercel at rapid sprint velocities.',
+      bio: 'I’m Dan, an AI-native full stack developer. Rather than spending weeks writing boilerplate code by hand, I work at the architectural level: designing decoupled system flows, data schemas, API contracts, and responsive interfaces with HTML, CSS, and Tailwind. By directing generative AI as an engineering co-pilot, I build, debug, and ship production-ready cloud applications to Cloudflare Pages and Vercel, on optimised timelines.',
     },
 
     telemetry: {

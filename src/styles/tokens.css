@@ -24,6 +24,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Android and iOS paint a translucent blue box over anything you tap. The
+     site draws its own hover and active states, so the default one only ever
+     reads as a glitch over an icon. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -42,6 +46,22 @@ body {
   *::after {
     cursor: none !important;
   }
+}
+
+/* The site reads as an interface rather than a document, so dragging across
+   the hero or a card should not leave a text highlight behind. */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The one exception: you have to be able to select and correct what you typed
+   into the contact form. Some browsers also break caret placement inside a
+   field that inherits user-select: none. */
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 ::selection {
