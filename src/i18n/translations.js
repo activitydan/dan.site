@@ -24,9 +24,9 @@ export const translations = {
         title: 'Sistemi potenziati dall’AI',
         text: 'Progetto sistemi full stack disaccoppiati, definisco i contratti tra componenti e API e dirigo copiloti di AI generativa per implementare il codice rapidamente.',
       },
-      github: {
-        title: 'Architetture di sistema',
-        text: 'Oltre 10 repository, pubblici e privati, portati dall’idea alla pubblicazione sull’edge: analizzatori ATS, WebSocket e strumenti basati su AI.',
+      past: {
+        title: 'Trader multidisciplinare',
+        text: 'Trader divergente in psicologia e fraud-analyzer con oltre 6 approcci di trading approvati e ben più di 10 strategie create e backtestate.',
       },
       profile: {
         role: 'Sviluppatore AI-native • 4º anno AIML',
@@ -248,9 +248,9 @@ export const translations = {
         title: 'AI-Augmented Systems',
         text: 'Architecting decoupled full-stack systems, designing component and API contracts, and directing generative AI co-pilots for rapid code implementation.',
       },
-      github: {
-        title: 'System Architectures',
-        text: 'Over 10 public and private repositories—architected from concept to edge deployment, featuring ATS analyzers, WebSockets, and AI tools.',
+      past: {
+        title: 'Multidisciplinary trader',
+        text: 'A trader with a divergent read on market psychology and fraud analysis, with more than 6 approved trading approaches and well over 10 strategies built and backtested.',
       },
       profile: {
         role: 'AI-Native Developer • 4th-Year AIML',

@@ -31,36 +31,24 @@ export default function EngineeringTelemetry() {
           </p>
           <div className="telemetry-meta-row text-gray">
             <span>CORE STACK:</span>
-            <span className="meta-highlight">Next.js, Cloudflare Pages, Gemini AI, Tailwind CSS</span>
+            <span className="meta-highlight">Next.js, Vercel, Claude Code, Google Gemini</span>
           </div>
         </div>
 
-        {/* Card 2: GitHub Projects */}
+        {/* Card 2: Trading, before the switch to engineering. No action link:
+            this one is history, not somewhere to go. */}
         <div className="telemetry-card hoverable">
           <div className="telemetry-card-top">
-            <span className="card-badge">GITHUB CODE</span>
-            <span className="card-indicator">10+ Repositories</span>
+            <span className="card-badge">PAST FOCUS</span>
+            <span className="card-indicator">Inactive from 2024</span>
           </div>
-          <h3 className="telemetry-card-title">{t('telemetry.github.title')}</h3>
+          <h3 className="telemetry-card-title">{t('telemetry.past.title')}</h3>
           <p className="telemetry-card-text text-gray">
-            {t('telemetry.github.text')}
+            {t('telemetry.past.text')}
           </p>
-          <div className="telemetry-actions-list">
-            <a
-              href="https://github.com/DineshS36"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="telemetry-btn hoverable"
-              onMouseEnter={playHoverSound}
-              onClick={playClickSound}
-            >
-              <span>View GitHub Repositories</span>
-              <span className="telemetry-arrow">↗</span>
-            </a>
-          </div>
         </div>
 
-        {/* Card 3: LinkedIn Profile & Quick Contact */}
+        {/* Card 3: Profile & Quick Contact */}
         <div className="telemetry-card telemetry-card-comms hoverable">
           <div className="telemetry-card-top">
             <span className="card-badge">PROFESSIONAL PROFILE</span>
@@ -90,18 +78,6 @@ export default function EngineeringTelemetry() {
           </p>
 
           <div className="telemetry-actions-list">
-            <a
-              href="https://www.linkedin.com/in/dinesh-s-173698390"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="telemetry-btn hoverable"
-              onMouseEnter={playHoverSound}
-              onClick={playClickSound}
-            >
-              <span>Connect on LinkedIn</span>
-              <span className="telemetry-arrow">↗</span>
-            </a>
-
             <a
               href="https://wa.me/919345380487?text=Hi%20Dinesh,%20saw%20your%20portfolio%20and%20wanted%20to%20connect!"
               target="_blank"
