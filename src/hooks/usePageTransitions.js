@@ -7,6 +7,18 @@ import { stopLenis, resetLenis } from './useLenis';
 gsap.registerPlugin(Observer);
 
 const ROUTES = ['/', '/about', '/work', '/skills', '/contact'];
+
+// What each section is called on screen. The URL and the name are separate on
+// purpose: /skills is labelled Core, and anything that names a section reads
+// this rather than echoing the path, so the dock, the drawer and the scroll
+// hint cannot end up disagreeing.
+export const ROUTE_LABELS = {
+  '/': 'Home',
+  '/about': 'About',
+  '/work': 'Work',
+  '/skills': 'Core',
+  '/contact': 'Contact',
+};
 const COOLDOWN_MS = 850;
 
 export default function usePageTransitions({ isActive }) {

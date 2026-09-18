@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAudio } from '../hooks/useAudio';
 import SiteControls from './SiteControls';
+import { ROUTE_LABELS } from '../hooks/usePageTransitions';
 
 function ConvexText({ text }) {
   if (!text) return null;
@@ -93,12 +94,12 @@ export default function Navbar({ isHeroPage }) {
   }, [isHeroPage]);
 
   const navRoutes = [
-    { path: '/', label: 'Home', number: '01' },
-    { path: '/about', label: 'About', number: '02' },
-    { path: '/work', label: 'Work', number: '03' },
-    { path: '/skills', label: 'Skills', number: '04' },
-    { path: '/contact', label: 'Contact', number: '05' },
-  ];
+    { path: '/', number: '01' },
+    { path: '/about', number: '02' },
+    { path: '/work', number: '03' },
+    { path: '/skills', number: '04' },
+    { path: '/contact', number: '05' },
+  ].map((route) => ({ ...route, label: ROUTE_LABELS[route.path] }));
 
   return (
     <>
@@ -146,13 +147,19 @@ export default function Navbar({ isHeroPage }) {
 
           {/* Desktop Navigation Links */}
           <div className="nav-links font-label uppercase">
-            {!isHeroPage && (
-              <NavLink to="/" className="nav-link hoverable text-glow" onMouseEnter={playHoverSound} onClick={playClickSound}>Home</NavLink>
-            )}
-            <NavLink to="/about" className="nav-link hoverable text-glow" onMouseEnter={playHoverSound} onClick={playClickSound}>About</NavLink>
-            <NavLink to="/work" className="nav-link hoverable text-glow" onMouseEnter={playHoverSound} onClick={playClickSound}>Work</NavLink>
-            <NavLink to="/skills" className="nav-link hoverable text-glow" onMouseEnter={playHoverSound} onClick={playClickSound}>Skills</NavLink>
-            <NavLink to="/contact" className="nav-link hoverable text-glow" onMouseEnter={playHoverSound} onClick={playClickSound}>Contact</NavLink>
+            {navRoutes
+              .filter((route) => route.path !== '/' || !isHeroPage)
+              .map((route) => (
+                <NavLink
+                  key={route.path}
+                  to={route.path}
+                  className="nav-link hoverable text-glow"
+                  onMouseEnter={playHoverSound}
+                  onClick={playClickSound}
+                >
+                  {route.label}
+                </NavLink>
+              ))}
           </div>
 
           <div className="nav-actions">
