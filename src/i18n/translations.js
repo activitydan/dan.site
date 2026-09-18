@@ -29,7 +29,7 @@ export const translations = {
         text: 'Trader divergente in psicologia e fraud-analyzer con oltre 6 approcci di trading approvati e ben più di 10 strategie create e backtestate.',
       },
       profile: {
-        role: 'Sviluppatore full stack AI-native',
+        role: 'Sviluppatore & analista',
       },
     },
 
@@ -252,7 +252,7 @@ export const translations = {
         text: 'A trader with a divergent read on market psychology and fraud analysis, with more than 6 approved trading approaches and well over 10 strategies built and backtested.',
       },
       profile: {
-        role: 'AI-native full stack developer',
+        role: 'Developer & analyst',
       },
     },
 
