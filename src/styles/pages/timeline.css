@@ -173,7 +173,9 @@
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   gap: 2.2rem;
-  background: rgba(12, 12, 16, 0.88);
+  /* The same fill the simulation pane uses, so card and pane read as one
+     surface rather than two shades of dark stacked on each other. */
+  background: radial-gradient(circle at 50% 50%, rgba(18, 20, 32, 0.75) 0%, rgba(6, 7, 12, 0.95) 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 2.4rem 2.6rem;
@@ -427,11 +429,13 @@
 }
 
 .stage-philosophy {
+  /* Same metrics as .stage-title: these passages are the card's content, not
+     a caption under it. Sentence case, though, so no text-transform. */
   color: #ffffff;
+  font-size: 1.65rem;
   font-weight: 700;
-  font-size: 1rem;
-  line-height: 1.55;
-  max-width: 38ch;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .philosophy-figures {
@@ -479,4 +483,10 @@
   .philosophy-figure-img {
     max-width: 62%;
   }
+}
+
+/* With the category and date gone from a philosophy card, space-between has
+   nothing to push against, so the stage number is pinned right on its own. */
+.stage-topbar > .stage-step-tag:only-child {
+  margin-left: auto;
 }

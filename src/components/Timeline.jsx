@@ -193,10 +193,14 @@ export default function Timeline() {
                     {/* Left Pane: Narrative & Technical Telemetry */}
                     <div className="timeline-narrative-pane">
                       <div className="stage-topbar font-label">
-                        <div className="stage-topbar-left">
-                          <span className="stage-badge uppercase">{item.category}</span>
-                          <span className="stage-date uppercase">{item.date}</span>
-                        </div>
+                        {/* A philosophy card is not a dated milestone, so it
+                            carries only its stage number. */}
+                        {!isPhilosophy && (
+                          <div className="stage-topbar-left">
+                            <span className="stage-badge uppercase">{item.category}</span>
+                            <span className="stage-date uppercase">{item.date}</span>
+                          </div>
+                        )}
                         <span className="stage-step-tag text-gray">{item.stageLabel}</span>
                       </div>
 
