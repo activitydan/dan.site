@@ -46,6 +46,25 @@ export default function EngineeringTelemetry() {
           <p className="telemetry-card-text text-gray">
             {t('telemetry.past.text')}
           </p>
+
+          {/* Identity chip, anchored to the foot of the card the way the core
+              stack row is, so the three cards line up along the bottom. */}
+          <div className="profile-preview">
+            <img
+              src={danPhoto}
+              alt="Dan"
+              className="profile-preview-avatar"
+            />
+            <div className="profile-preview-info">
+              <div className="profile-preview-name">
+                <span>Dan</span>
+                <span className="profile-check" title="Verified Profile">✓</span>
+              </div>
+              <div className="profile-preview-role text-gray">
+                {t('telemetry.profile.role')}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Card 3: Profile & Quick Contact */}
@@ -53,24 +72,6 @@ export default function EngineeringTelemetry() {
           <div className="telemetry-card-top">
             <span className="card-badge">PROFESSIONAL PROFILE</span>
             <span className="card-indicator">Open to Roles</span>
-          </div>
-
-          {/* Clean LinkedIn Identity Preview */}
-          <div className="linkedin-profile-preview">
-            <img
-              src={danPhoto}
-              alt="Dan"
-              className="linkedin-preview-avatar"
-            />
-            <div className="linkedin-preview-info">
-              <div className="linkedin-preview-name">
-                <span>Dan</span>
-                <span className="linkedin-check" title="Verified Profile">✓</span>
-              </div>
-              <div className="linkedin-preview-role text-gray">
-                {t('telemetry.profile.role')}
-              </div>
-            </div>
           </div>
 
           <p className="telemetry-card-text text-gray" style={{ marginBottom: '1rem' }}>

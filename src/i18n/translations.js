@@ -29,7 +29,7 @@ export const translations = {
         text: 'Trader divergente in psicologia e fraud-analyzer con oltre 6 approcci di trading approvati e ben più di 10 strategie create e backtestate.',
       },
       profile: {
-        role: 'Sviluppatore AI-native • 4º anno AIML',
+        role: 'Sviluppatore full stack AI-native',
         text: 'Disponibile per ruoli di ingegneria full stack, sviluppo assistito dall’AI e progetti di distribuzione cloud.',
       },
     },
@@ -253,7 +253,7 @@ export const translations = {
         text: 'A trader with a divergent read on market psychology and fraud analysis, with more than 6 approved trading approaches and well over 10 strategies built and backtested.',
       },
       profile: {
-        role: 'AI-Native Developer • 4th-Year AIML',
+        role: 'AI-native full stack developer',
         text: 'Open for full-stack engineering roles, AI-assisted development, and modern cloud deployment projects.',
       },
     },
