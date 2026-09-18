@@ -1,9 +1,7 @@
-import { useAudio } from '../hooks/useAudio';
 import danPhoto from '../assets/MYphoto.jpeg';
 import { useLanguage } from '../i18n/context';
 
 export default function EngineeringTelemetry() {
-  const { playHoverSound, playClickSound } = useAudio();
   const { t } = useLanguage();
 
   return (
@@ -67,31 +65,9 @@ export default function EngineeringTelemetry() {
           </div>
         </div>
 
-        {/* Card 3: Profile & Quick Contact */}
-        <div className="telemetry-card telemetry-card-comms hoverable">
-          <div className="telemetry-card-top">
-            <span className="card-badge">PROFESSIONAL PROFILE</span>
-            <span className="card-indicator">Open to Roles</span>
-          </div>
-
-          <p className="telemetry-card-text text-gray" style={{ marginBottom: '1rem' }}>
-            {t('telemetry.profile.text')}
-          </p>
-
-          <div className="telemetry-actions-list">
-            <a
-              href="https://wa.me/919345380487?text=Hi%20Dinesh,%20saw%20your%20portfolio%20and%20wanted%20to%20connect!"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="telemetry-btn telemetry-btn-ping hoverable"
-              onMouseEnter={playHoverSound}
-              onClick={playClickSound}
-            >
-              <span>Chat on WhatsApp</span>
-              <span className="telemetry-arrow">💬</span>
-            </a>
-          </div>
-        </div>
+        {/* Card 3: deliberately empty, waiting on a photo. The grid stretches
+            it to the height of its neighbours, so the deck keeps its shape. */}
+        <div className="telemetry-card telemetry-card-empty hoverable" />
       </div>
     </div>
   );

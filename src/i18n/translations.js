@@ -30,7 +30,6 @@ export const translations = {
       },
       profile: {
         role: 'Sviluppatore full stack AI-native',
-        text: 'Disponibile per ruoli di ingegneria full stack, sviluppo assistito dall’AI e progetti di distribuzione cloud.',
       },
     },
 
@@ -254,7 +253,6 @@ export const translations = {
       },
       profile: {
         role: 'AI-native full stack developer',
-        text: 'Open for full-stack engineering roles, AI-assisted development, and modern cloud deployment projects.',
       },
     },
 

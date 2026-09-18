@@ -39,11 +39,12 @@ at hand. Worth picking up during a debug or cleanup pass.
    without digging through history.
 3. **No `.gitignore`.** `node_modules/`, `dist/` and `.wrangler/` are untracked
    and one distracted `git add .` away from being committed.
-4. **The template author's links are still live.** The email is the owner's, but
-   these are not: GitHub `DineshS36` (footer, telemetry card, and the three
-   project repos in `Work.jsx`), the LinkedIn profile, the WhatsApp number in
-   `EngineeringTelemetry.jsx`, and the GitHub API calls in `src/worker.js` that
-   read that account's stats. The owner chose to defer these.
+4. **The template author's links are still live.** The email is the owner's,
+   and the telemetry deck no longer carries any of these, but the rest do:
+   `Footer.jsx` (GitHub `DineshS36`, the LinkedIn profile, the WhatsApp
+   number), the three project repos in `Work.jsx`, and the GitHub API calls in
+   `src/worker.js` that read that account's stats. The owner chose to defer
+   these.
 5. **`canonical` and `og:url` point at `dinesh-portfolio.pages.dev`.** Search
    engines will treat that domain as the original of this site, and social
    previews will look for the image there.
