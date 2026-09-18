@@ -29,7 +29,7 @@ export const translations = {
         text: 'Trader divergente in psicologia e fraud-analyzer con oltre 6 approcci di trading approvati e ben più di 10 strategie create e backtestate.',
       },
       profile: {
-        role: 'Sviluppatore & analista',
+        role: 'Sviluppatore & Analista',
       },
     },
 
@@ -105,10 +105,13 @@ export const translations = {
     timeline: {
       items: [
         {
+          // A philosophy stage: no headline or summary, two passages instead,
+          // each answered by one of the figures in the right-hand pane.
           title: 'Basi del web e logica di programmazione',
-          headline: 'HTML5, CSS3 e fondamenti di programmazione',
-          summary:
-            'Ho iniziato a studiare logica di programmazione e sviluppo web a dicembre 2025. Ho imparato la struttura del frontend con HTML5, CSS3 e il CSS moderno, costruendo allo stesso tempo le basi del problem solving con Java, JavaScript e Python.',
+          philosophies: [
+            'Il Delta, in matematica che definisce la variazione e la differenza tra ciò che una realtà era e ciò che è diventata.',
+            'Il Triangolo di Penrose è un paradosso visivo che rappresenta l’impossibile. Dimostra come la percezione locale possa ingannare la mente sulla realtà globale.',
+          ],
         },
         {
           title: 'ChatUp: messaggistica in tempo reale',
@@ -182,7 +185,7 @@ export const translations = {
         text: 'A trader with a divergent read on market psychology and fraud analysis, with more than 6 approved trading approaches and well over 10 strategies built and backtested.',
       },
       profile: {
-        role: 'Developer & analyst',
+        role: 'Developer & Analyst',
       },
     },
 
@@ -259,9 +262,10 @@ export const translations = {
       items: [
         {
           title: 'Web Foundations & Core Logic',
-          headline: 'HTML5, CSS3 & Programming Basics',
-          summary:
-            'Started exploring programming logic and web development in December 2025. Mastered core frontend structure with HTML5, CSS3, and modern CSS, while building foundational problem-solving skills in Java, JavaScript, and Python.',
+          philosophies: [
+            'The Delta, in mathematics, is what defines variation: the difference between what a reality was and what it has become.',
+            'The Penrose triangle is a visual paradox standing for the impossible. It shows how local perception can mislead the mind about the global reality.',
+          ],
         },
         {
           title: 'ChatUp: Real-Time Messaging App',

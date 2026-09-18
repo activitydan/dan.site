@@ -410,3 +410,73 @@
     gap: 0.6rem;
   }
 }
+
+/* ---- Philosophy stage -------------------------------------------------
+   A stage that carries two short passages instead of metrics and a tech
+   list, each answered by a figure in the right-hand pane. The mockup for
+   this is a square; this pane is far wider, so the figures are capped
+   rather than stretched to fill it. */
+
+.stage-philosophy-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 2rem;
+  flex: 1;
+  margin-top: 1.25rem;
+}
+
+.stage-philosophy {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 38ch;
+}
+
+.philosophy-figures {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  box-sizing: border-box;
+}
+
+.philosophy-figure {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.philosophy-figure-img {
+  max-height: 100%;
+  /* The pane is much wider than it is tall per figure, so height is what
+     actually constrains these; the cap stops the triangle sprawling. */
+  max-width: 46%;
+  object-fit: contain;
+}
+
+.philosophy-figures-divider {
+  flex: none;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.philosophy-glyph {
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .philosophy-figure-img {
+    max-width: 62%;
+  }
+}

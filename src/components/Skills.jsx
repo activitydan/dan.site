@@ -28,7 +28,7 @@ const categoryData = [
   {
     id: '04',
     tag: 'EDGE & CLOUD RUNTIMES',
-    telemetry: 'Deployments&build • dev server',
+    telemetry: 'Deployments&build • Dev Server',
     skills: ['Vercel', 'Git', 'GitHub', 'CI/CD Deployments']
   },
   {

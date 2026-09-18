@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAudio } from '../hooks/useAudio';
 import {
-  WebArchitectureCanvas,
   ChatUpSocketStreamCanvas,
   RoastingAITokenStreamCanvas,
   EdgeResumeATSParserCanvas
 } from './TimelineVisualizers';
 import MaskedTitle from './MaskedTitle';
+import penroseTriangle from '../assets/penrose-triangle.png';
 import { useLanguage } from '../i18n/context';
 
 export default function Timeline() {
@@ -24,13 +24,9 @@ export default function Timeline() {
       stageLabel: 'STAGE 01',
       category: 'THE SPARK',
       dockLabel: 'FOUNDATIONS',
-      metrics: [
-        { label: 'Timeline', value: 'Dec 2025 – Mar 2026' },
-        { label: 'Focus', value: 'Web Foundations' },
-        { label: 'Core Tools', value: 'HTML, CSS & Java' }
-      ],
-      techStack: ['HTML5', 'CSS3', 'Tailwind CSS', 'JavaScript', 'Java', 'Git'],
-      Visualizer: WebArchitectureCanvas
+      // A philosophy stage: two passages instead of metrics and a tech list,
+      // answered by two figures instead of a live canvas.
+      kind: 'philosophy'
     },
     {
       epoch: '02',
@@ -130,7 +126,7 @@ export default function Timeline() {
       {/* Aligned Section Header matching #about, #work, #skills */}
       <div className="timeline-header">
         <div className="gsap-reveal">
-          <MaskedTitle text="Engineering Journey" />
+          <MaskedTitle text="Philosophies" />
           <div className="divider" />
         </div>
         <div className="timeline-header-meta font-label">
@@ -182,6 +178,7 @@ export default function Timeline() {
             {epochs.map((item, idx) => {
               const Visualizer = item.Visualizer;
               const isActive = activeEpochIndex === idx;
+              const isPhilosophy = item.kind === 'philosophy';
 
               return (
                 <div
@@ -205,36 +202,65 @@ export default function Timeline() {
 
                       <div className="stage-title-wrap">
                         <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                        <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
+                        {!isPhilosophy && (
+                          <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
+                        )}
                       </div>
 
-                      <p className="stage-summary text-gray">{item.summary}</p>
+                      {isPhilosophy ? (
+                        <div className="stage-philosophy-list">
+                          {item.philosophies.map((passage, pIdx) => (
+                            <p key={pIdx} className="stage-philosophy">{passage}</p>
+                          ))}
+                        </div>
+                      ) : (
+                        <>
+                          <p className="stage-summary text-gray">{item.summary}</p>
 
-                      {/* Telemetry Metrics Grid */}
-                      <div className="stage-metrics-grid font-label">
-                        {item.metrics.map((m, mIdx) => (
-                          <div key={mIdx} className="stage-metric-box">
-                            <span className="metric-lbl text-gray">{m.label}</span>
-                            <span className="metric-val">{m.value}</span>
+                          {/* Telemetry Metrics Grid */}
+                          <div className="stage-metrics-grid font-label">
+                            {item.metrics.map((m, mIdx) => (
+                              <div key={mIdx} className="stage-metric-box">
+                                <span className="metric-lbl text-gray">{m.label}</span>
+                                <span className="metric-val">{m.value}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
 
-                      {/* Tech Stack Pills matching .skill-pill */}
-                      <div className="stage-tech-pills font-label">
-                        {item.techStack.map((tech, tIdx) => (
-                          <span key={tIdx} className="stage-pill">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                          {/* Tech Stack Pills matching .skill-pill */}
+                          <div className="stage-tech-pills font-label">
+                            {item.techStack.map((tech, tIdx) => (
+                              <span key={tIdx} className="stage-pill">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </div>
 
-                    {/* Right Pane: 2D Live Visualizer Canvas */}
+                    {/* Right Pane: a live visualizer, or for a philosophy
+                        stage the two figures the passages refer to */}
                     <div className="timeline-simulation-pane">
-                      <div className="terminal-canvas-wrapper">
-                        <Visualizer isActive={isActive} />
-                      </div>
+                      {isPhilosophy ? (
+                        <div className="philosophy-figures">
+                          <div className="philosophy-figure">
+                            <img
+                              src={penroseTriangle}
+                              alt="Triangolo di Penrose"
+                              className="philosophy-figure-img"
+                            />
+                          </div>
+                          <span className="philosophy-figures-divider" />
+                          <div className="philosophy-figure">
+                            <span className="philosophy-glyph" aria-hidden="true">Δ</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="terminal-canvas-wrapper">
+                          <Visualizer isActive={isActive} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
