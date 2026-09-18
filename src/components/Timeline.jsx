@@ -204,17 +204,17 @@ export default function Timeline() {
                         <span className="stage-step-tag text-gray">{item.stageLabel}</span>
                       </div>
 
-                      <div className="stage-title-wrap">
-                        <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                        {!isPhilosophy && (
+                      {!isPhilosophy && (
+                        <div className="stage-title-wrap">
+                          <h3 className="stage-title uppercase text-glow">{item.title}</h3>
                           <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       {isPhilosophy ? (
                         <div className="stage-philosophy-list">
                           {item.philosophies.map((passage, pIdx) => (
-                            <p key={pIdx} className="stage-philosophy">{passage}</p>
+                            <p key={pIdx} className="stage-philosophy uppercase">{passage}</p>
                           ))}
                         </div>
                       ) : (

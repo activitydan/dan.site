@@ -105,9 +105,8 @@ export const translations = {
     timeline: {
       items: [
         {
-          // A philosophy stage: no headline or summary, two passages instead,
-          // each answered by one of the figures in the right-hand pane.
-          title: 'Basi del web e logica di programmazione',
+          // A philosophy stage: no title, headline or summary, two passages
+          // instead, each answered by a figure in the right-hand pane.
           philosophies: [
             'Il Delta, in matematica che definisce la variazione e la differenza tra ciò che una realtà era e ciò che è diventata.',
             'Il Triangolo di Penrose è un paradosso visivo che rappresenta l’impossibile. Dimostra come la percezione locale possa ingannare la mente sulla realtà globale.',
@@ -261,7 +260,6 @@ export const translations = {
     timeline: {
       items: [
         {
-          title: 'Web Foundations & Core Logic',
           philosophies: [
             'The Delta, in mathematics, is what defines variation: the difference between what a reality was and what it has become.',
             'The Penrose triangle is a visual paradox standing for the impossible. It shows how local perception can mislead the mind about the global reality.',
