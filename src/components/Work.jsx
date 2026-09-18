@@ -4,17 +4,9 @@ import ProjectModal from './ProjectModal';
 import MaskedTitle from './MaskedTitle';
 import { useLanguage } from '../i18n/context';
 
-import chatup1 from '../assets/chatup-1.webp';
-import chatup2 from '../assets/chatup-2.webp';
-
 import roast1 from '../assets/roast-1.webp';
 import roast2 from '../assets/roast-2.webp';
 import roast3 from '../assets/roast-3.webp';
-
-import resumeMain from '../assets/resume.webp';
-import resume1 from '../assets/resume1.webp';
-import resume2 from '../assets/resume2.webp';
-import resume3 from '../assets/resume3.webp';
 
 export default function Work() {
   const [activeProjectIndex, setActiveProjectIndex] = useState(null);
@@ -24,62 +16,10 @@ export default function Work() {
   // Only the language-independent data lives here. Every piece of prose comes
   // from the translation catalogue and is merged in below, so a project's copy
   // and its assets never drift apart.
+  // A single project, shown as one full-width card. Only the language-
+  // independent data lives here; the prose comes from the catalogue below.
   const projectData = useMemo(
     () => [
-      {
-        bgClass: 'bg-3',
-        shortTitle: 'AI Resume Builder',
-        category: 'SAAS \u2022 SYSTEM ARCHITECTURE \u2022 AI DIRECTION',
-        techStack: [
-          'Next.js',
-          'Express',
-          'PostgreSQL',
-          'Prisma',
-          'Google OAuth',
-          'Gemini API',
-          'Cloudflare Pages'
-        ],
-        architectureFlow: [
-          { step: '01', tech: 'Next.js \u2022 Cloudflare' },
-          { step: '02', tech: 'Google OAuth 2.0' },
-          { step: '03', tech: 'Node.js \u2022 Express' },
-          { step: '04', tech: 'Gemini Flash \u2022 PostgreSQL' },
-        ],
-        metrics: [
-          { label: 'Edge TTFB', value: '< 85ms' },
-          { label: 'ATS Match Accuracy', value: '98.6%' },
-          { label: 'Avg AI Stream Time', value: '1.2s' },
-          { label: 'Security Standard', value: 'OAuth 2.0' },
-        ],
-        title: 'AI Resume Builder',
-        images: [resumeMain, resume1, resume2, resume3],
-        githubUrl: 'https://github.com/DineshS36/resume-analyser',
-        liveDemoUrl: 'https://resume-analyser.pages.dev',
-        exploreUrl: 'https://resume-analyser.pages.dev'
-      },
-      {
-        bgClass: 'bg-1',
-        shortTitle: 'ChatUp',
-        category: 'REAL-TIME ARCHITECTURE \u2022 FULL STACK',
-        techStack: ['React', 'Node.js', 'Express.js', 'Socket.io', 'MongoDB'],
-        architectureFlow: [
-          { step: '01', tech: 'React \u2022 State Sync' },
-          { step: '02', tech: 'Socket.io Cluster' },
-          { step: '03', tech: 'Node.js \u2022 Express API' },
-          { step: '04', tech: 'MongoDB Atlas' },
-        ],
-        metrics: [
-          { label: 'Socket Ping', value: '< 25ms' },
-          { label: 'Delivery Guarantee', value: '99.99%' },
-          { label: 'Re-connect Time', value: '< 400ms' },
-          { label: 'Data Protocol', value: 'WebSockets' },
-        ],
-        title: 'ChatUp',
-        images: [chatup1, chatup2],
-        githubUrl: 'https://github.com/DineshS36/chatup',
-        liveDemoUrl: 'https://chatup-phi.vercel.app',
-        exploreUrl: 'https://chatup-phi.vercel.app'
-      },
       {
         bgClass: 'bg-2',
         shortTitle: 'AI Roast Generator',

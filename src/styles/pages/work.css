@@ -11,13 +11,17 @@
 
 .work-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* One project, one full-width card. Two columns would leave the card
+     sitting in the left half of the section. */
+  grid-template-columns: 1fr;
   gap: 2rem;
 }
 
 .project-card {
   position: relative;
-  aspect-ratio: 4/3;
+  /* Wider than the 4/3 the cards used in the two-column grid: at full width
+     that ratio would make the card taller than the viewport. */
+  aspect-ratio: 3/2;
   background: #111;
   border-radius: 12px;
   overflow: hidden;
@@ -26,9 +30,6 @@
   cursor: pointer;
 }
 
-.project-card:nth-child(even) {
-  transform: translateY(4rem);
-}
 
 .project-card:hover {
   border-color: #fff;
@@ -97,11 +98,12 @@
 
 @media (max-width: 768px) {
   .work-grid {
-    grid-template-columns: 1fr;
     gap: 3rem;
   }
 
-  .project-card:nth-child(even) {
-    transform: translateY(0);
+  .project-card {
+    /* 3/2 is too short once the card is only a phone wide. */
+    aspect-ratio: 4/3;
   }
+
 }
