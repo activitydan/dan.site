@@ -291,7 +291,9 @@
      screen of nothing under the cards. */
   .skills-page-section {
     min-height: 0;
-    padding-top: 5rem;
+    /* The dock is a floating pill here and ends 78px down, so 5rem left the
+       heading 2px under it. Desktop gets 22px of air; this gives 50. */
+    padding-top: 8rem;
     padding-bottom: 1.25rem;
   }
 
@@ -325,6 +327,14 @@
   }
   .orbital-card-inner {
     padding: 1.35rem 1.25rem;
+  }
+
+  /* The cards are taller than the stage here and hang past its foot, so a
+     floor glow measured from the stage's bottom lands 74px up inside them.
+     On a wide screen the cards sit inside the stage and it already clears
+     them, which is why this only needs moving on a phone. */
+  .orbital-floor-grid {
+    bottom: -76px;
   }
 
   /* A notch down across the card. Smaller pills are what does the real work:

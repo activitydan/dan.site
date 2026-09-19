@@ -21,23 +21,6 @@ export const ROUTE_LABELS = {
 };
 const COOLDOWN_MS = 850;
 
-// How much more vertical than horizontal a drag has to be before it counts as
-// a page change, and how far it has to travel. Without this, dragging a skills
-// card sideways carries enough stray vertical movement past the observer's
-// tolerance to flip the route. A wheel or trackpad scroll has no start point
-// and is never filtered.
-const VERTICAL_RATIO = 1.8;
-const MIN_DRAG_PX = 60;
-
-const isVerticalDrag = (self) => {
-  if (!self || self.event?.type === 'wheel') return true;
-  const dx = Math.abs(self.x - self.startX);
-  const dy = Math.abs(self.y - self.startY);
-  // Anything that is not a drag reports no start point; leave it alone.
-  if (!Number.isFinite(dx) || !Number.isFinite(dy)) return true;
-  return dy >= MIN_DRAG_PX && dy >= dx * VERTICAL_RATIO;
-};
-
 export default function usePageTransitions({ isActive }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -109,19 +92,18 @@ export default function usePageTransitions({ isActive }) {
     if (!isActive) return;
 
     observerRef.current = Observer.create({
-      // No 'pointer': that is what let a held left button drag the page from
-      // one route to the next, which made reaching left for a skills card a
-      // coin toss. With 'touch' and no 'pointer', Observer ignores any pointer
-      // event whose pointerType is not 'touch', so a mouse drag stops counting
-      // even on a laptop with a touchscreen, while the wheel still works.
-      type: 'wheel,touch',
+      // Wheel only. Dragging does not change the page on either side: a held
+      // mouse button made reaching for a skills card a coin toss, and a touch
+      // drag did the same to anyone moving a card with a finger. What is left
+      // for touch is the globe on the hero, the scroll hint at the foot of
+      // each inner page, and the dock.
+      type: 'wheel',
       wheelSpeed: -1,
       tolerance: 45,
       preventDefault: false, // Allow normal internal scrolling inside page content
-      onUp: (self) => {
-        // onUp = user scrolled down / swiped up (intent to move forward)
+      onUp: () => {
+        // onUp = user scrolled down (intent to move forward)
         if (isNavigating.current || isModalOrMenuOpen()) return;
-        if (!isVerticalDrag(self)) return;
 
         const isHero = location.pathname === '/';
         const scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -140,10 +122,9 @@ export default function usePageTransitions({ isActive }) {
           transitionTo('next');
         }
       },
-      onDown: (self) => {
-        // onDown = user scrolled up / swiped down (intent to move backward)
+      onDown: () => {
+        // onDown = user scrolled up (intent to move backward)
         if (isNavigating.current || isModalOrMenuOpen()) return;
-        if (!isVerticalDrag(self)) return;
 
         const isHero = location.pathname === '/';
         if (isHero) return; // Cannot go backward from Hero
