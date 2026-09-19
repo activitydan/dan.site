@@ -33,12 +33,13 @@ at hand. Worth picking up during a debug or cleanup pass.
    `src/styles/pages/hero.css`, `src/styles/pages/skills.css` and
    `src/styles/components/project-modal.css` no longer do anything. Harmless,
    but they suggest the rule is local when it is global.
-2. **Some components are exported but never imported.** `ThreeBackground.jsx`
-   and `shaders.js` are the raymarched black hole the butterfly swarm
-   replaced; `WebArchitectureCanvas` in `TimelineVisualizers.jsx` was stage
-   01's visualizer before that stage became a philosophy card. The bundler
-   drops all of them; they were kept so the earlier versions can be restored
-   without digging through history.
+2. **`ThreeBackground.jsx` and `shaders.js` are unused.** They are the raymarched
+   black hole the butterfly swarm replaced. Nothing imports them, so the
+   bundler drops them; they were kept so the old background can be restored
+   without digging through history. `src/assets/penrose-triangle.png` is the
+   same story: the owner supplied it for a version of timeline stage 01 that
+   was reverted, and Vite only emits assets something imports, so it costs the
+   build nothing.
 3. **No `.gitignore`.** `node_modules/`, `dist/` and `.wrangler/` are untracked
    and one distracted `git add .` away from being committed.
 4. **The template author's links are still live.** The email is the owner's,

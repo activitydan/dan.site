@@ -105,12 +105,10 @@ export const translations = {
     timeline: {
       items: [
         {
-          // A philosophy stage: no title, headline or summary, two passages
-          // instead, each answered by a figure in the right-hand pane.
-          philosophies: [
-            'Il Triangolo di Penrose è un paradosso visivo che rappresenta l’impossibile. Dimostra come la percezione locale possa ingannare la mente sulla realtà globale.',
-            'Il Delta, in matematica che definisce la variazione e la differenza tra ciò che una realtà era e ciò che è diventata.',
-          ],
+          title: 'Basi del web e logica di programmazione',
+          headline: 'HTML5, CSS3 e fondamenti di programmazione',
+          summary:
+            'Ho iniziato a studiare logica di programmazione e sviluppo web a dicembre 2025. Ho imparato la struttura del frontend con HTML5, CSS3 e il CSS moderno, costruendo allo stesso tempo le basi del problem solving con Java, JavaScript e Python.',
         },
         {
           title: 'ChatUp: messaggistica in tempo reale',
@@ -260,10 +258,10 @@ export const translations = {
     timeline: {
       items: [
         {
-          philosophies: [
-            'The Penrose triangle is a visual paradox standing for the impossible. It shows how local perception can mislead the mind about the global reality.',
-            'The Delta, in mathematics, is what defines variation: the difference between what a reality was and what it has become.',
-          ],
+          title: 'Web Foundations & Core Logic',
+          headline: 'HTML5, CSS3 & Programming Basics',
+          summary:
+            'Started exploring programming logic and web development in December 2025. Mastered core frontend structure with HTML5, CSS3, and modern CSS, while building foundational problem-solving skills in Java, JavaScript, and Python.',
         },
         {
           title: 'ChatUp: Real-Time Messaging App',

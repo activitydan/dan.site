@@ -1,19 +1,13 @@
-import { Fragment, useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAudio } from '../hooks/useAudio';
 import {
+  WebArchitectureCanvas,
   ChatUpSocketStreamCanvas,
   RoastingAITokenStreamCanvas,
   EdgeResumeATSParserCanvas
 } from './TimelineVisualizers';
 import MaskedTitle from './MaskedTitle';
-import penroseTriangle from '../assets/penrose-triangle.png';
 import { useLanguage } from '../i18n/context';
-
-// The figures a philosophy stage answers its passages with, in passage order.
-const PHILOSOPHY_FIGURES = [
-  <img src={penroseTriangle} alt="Triangolo di Penrose" className="philosophy-figure-img" />,
-  <span className="philosophy-glyph" aria-hidden="true">Δ</span>,
-];
 
 export default function Timeline() {
   const { playHoverSound, playClickSound } = useAudio();
@@ -30,9 +24,13 @@ export default function Timeline() {
       stageLabel: 'STAGE 01',
       category: 'THE SPARK',
       dockLabel: 'FOUNDATIONS',
-      // A philosophy stage: two passages instead of metrics and a tech list,
-      // answered by two figures instead of a live canvas.
-      kind: 'philosophy'
+      metrics: [
+        { label: 'Timeline', value: 'Dec 2025 – Mar 2026' },
+        { label: 'Focus', value: 'Web Foundations' },
+        { label: 'Core Tools', value: 'HTML, CSS & Java' }
+      ],
+      techStack: ['HTML5', 'CSS3', 'Tailwind CSS', 'JavaScript', 'Java', 'Git'],
+      Visualizer: WebArchitectureCanvas
     },
     {
       epoch: '02',
@@ -132,7 +130,7 @@ export default function Timeline() {
       {/* Aligned Section Header matching #about, #work, #skills */}
       <div className="timeline-header">
         <div className="gsap-reveal">
-          <MaskedTitle text="Philosophies" />
+          <MaskedTitle text="Engineering Journey" />
           <div className="divider" />
         </div>
         <div className="timeline-header-meta font-label">
@@ -184,7 +182,6 @@ export default function Timeline() {
             {epochs.map((item, idx) => {
               const Visualizer = item.Visualizer;
               const isActive = activeEpochIndex === idx;
-              const isPhilosophy = item.kind === 'philosophy';
 
               return (
                 <div
@@ -195,80 +192,50 @@ export default function Timeline() {
                   }}
                 >
                   {/* Stage Container Card */}
-                  <div className={`timeline-stage-card hoverable${isPhilosophy ? ' timeline-stage-card-philosophy' : ''}`}>
-                    {isPhilosophy ? (
-                      /* A philosophy stage drops the narrative/simulation
-                         split. Each passage and the figure that answers it
-                         share a row of the card's own grid, so the figure
-                         lands on the passage's last line however it wraps. */
-                      <>
-                        <div className="stage-topbar font-label philosophy-topbar">
-                          {/* Not a dated milestone, so only the stage number. */}
-                          <span className="stage-step-tag text-gray">{item.stageLabel}</span>
+                  <div className="timeline-stage-card hoverable">
+                    {/* Left Pane: Narrative & Technical Telemetry */}
+                    <div className="timeline-narrative-pane">
+                      <div className="stage-topbar font-label">
+                        <div className="stage-topbar-left">
+                          <span className="stage-badge uppercase">{item.category}</span>
+                          <span className="stage-date uppercase">{item.date}</span>
                         </div>
+                        <span className="stage-step-tag text-gray">{item.stageLabel}</span>
+                      </div>
 
-                        {/* The frame the other stages put around their
-                            visualizer, and only the frame: the figures stay in
-                            the card's grid so each can sit on the last line of
-                            its passage, and they paint over this. */}
-                        <div className="timeline-simulation-pane philosophy-pane-frame" aria-hidden="true" />
+                      <div className="stage-title-wrap">
+                        <h3 className="stage-title uppercase text-glow">{item.title}</h3>
+                        <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
+                      </div>
 
-                        {item.philosophies.map((passage, pIdx) => (
-                          <Fragment key={pIdx}>
-                            <p className={`stage-philosophy uppercase philosophy-row-${pIdx + 2}`}>{passage}</p>
-                            <div className={`philosophy-figure philosophy-row-${pIdx + 2}`}>
-                              {PHILOSOPHY_FIGURES[pIdx]}
-                            </div>
-                          </Fragment>
+                      <p className="stage-summary text-gray">{item.summary}</p>
+
+                      {/* Telemetry Metrics Grid */}
+                      <div className="stage-metrics-grid font-label">
+                        {item.metrics.map((m, mIdx) => (
+                          <div key={mIdx} className="stage-metric-box">
+                            <span className="metric-lbl text-gray">{m.label}</span>
+                            <span className="metric-val">{m.value}</span>
+                          </div>
                         ))}
-                      </>
-                    ) : (
-                      <>
-                        {/* Left Pane: Narrative & Technical Telemetry */}
-                        <div className="timeline-narrative-pane">
-                          <div className="stage-topbar font-label">
-                            <div className="stage-topbar-left">
-                              <span className="stage-badge uppercase">{item.category}</span>
-                              <span className="stage-date uppercase">{item.date}</span>
-                            </div>
-                            <span className="stage-step-tag text-gray">{item.stageLabel}</span>
-                          </div>
+                      </div>
 
-                          <div className="stage-title-wrap">
-                            <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                            <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
-                          </div>
+                      {/* Tech Stack Pills matching .skill-pill */}
+                      <div className="stage-tech-pills font-label">
+                        {item.techStack.map((tech, tIdx) => (
+                          <span key={tIdx} className="stage-pill">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
 
-                          <p className="stage-summary text-gray">{item.summary}</p>
-
-                          {/* Telemetry Metrics Grid */}
-                          <div className="stage-metrics-grid font-label">
-                            {item.metrics.map((m, mIdx) => (
-                              <div key={mIdx} className="stage-metric-box">
-                                <span className="metric-lbl text-gray">{m.label}</span>
-                                <span className="metric-val">{m.value}</span>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Tech Stack Pills matching .skill-pill */}
-                          <div className="stage-tech-pills font-label">
-                            {item.techStack.map((tech, tIdx) => (
-                              <span key={tIdx} className="stage-pill">
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Right Pane: 3D Interactive Spatial Viewport */}
-                        <div className="timeline-simulation-pane">
-                          <div className="terminal-canvas-wrapper">
-                            <Visualizer isActive={isActive} />
-                          </div>
-                        </div>
-                      </>
-                    )}
+                    {/* Right Pane: 2D Live Visualizer Canvas */}
+                    <div className="timeline-simulation-pane">
+                      <div className="terminal-canvas-wrapper">
+                        <Visualizer isActive={isActive} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
