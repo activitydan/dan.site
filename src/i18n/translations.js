@@ -16,20 +16,20 @@ export const translations = {
     },
 
     about: {
-      bio: 'Sono Dan, sviluppatore full stack AI-native. Invece di passare settimane a scrivere codice ripetitivo a mano, lavoro a livello architetturale: progetto flussi di sistema disaccoppiati, schemi dati, contratti API e interfacce responsive con HTML, CSS e Tailwind. Dirigendo l’AI generativa come copilota di sviluppo, realizzo, correggo e pubblico applicazioni cloud pronte per la produzione su Cloudflare Pages e Vercel, in tempi ottimizzati.',
+      bio: 'Sono Dan, sviluppatore full stack AI-native. Invece di passare settimane a scrivere codice ripetitivo a mano, lavoro a livello architetturale: progetto flussi di sistema disaccoppiati, schemi dati, contratti API e interfacce responsive con HTML, CSS e JavaScript. Dirigendo l’AI generativa come copilota di sviluppo, realizzo, correggo e pubblico applicazioni cloud pronte per la produzione su Vercel, in tempi ottimizzati.',
     },
 
     telemetry: {
       focus: {
-        title: 'Sistemi potenziati dall’AI',
-        text: 'Progetto sistemi full stack disaccoppiati, definisco i contratti tra componenti e API e dirigo copiloti di AI generativa per implementare il codice rapidamente.',
+        title: 'Direttore digitale',
+        text: 'Direttore Digitale trasformatore e ottimizzatore dei processi aziendali attraverso la progettazione di architetture software, soluzioni web ed ecosistemi multi-piattaforma.',
       },
       past: {
         title: 'Trader multidisciplinare',
         text: 'Trader divergente in psicologia e fraud-analyzer con oltre 6 approcci di trading approvati e ben più di 10 strategie create e backtestate.',
       },
       profile: {
-        role: 'Sviluppatore & Analista',
+        role: 'Sviluppatore & Direttore & Analista',
       },
     },
 
@@ -169,20 +169,20 @@ export const translations = {
     },
 
     about: {
-      bio: 'I’m Dan, an AI-native full stack developer. Rather than spending weeks writing boilerplate code by hand, I work at the architectural level: designing decoupled system flows, data schemas, API contracts, and responsive interfaces with HTML, CSS, and Tailwind. By directing generative AI as an engineering co-pilot, I build, debug, and ship production-ready cloud applications to Cloudflare Pages and Vercel, on optimised timelines.',
+      bio: 'I’m Dan, an AI-native full stack developer. Rather than spending weeks writing boilerplate code by hand, I work at the architectural level: designing decoupled system flows, data schemas, API contracts, and responsive interfaces with HTML, CSS, and JavaScript. By directing generative AI as an engineering co-pilot, I build, debug, and ship production-ready cloud applications to Vercel, on optimised timelines.',
     },
 
     telemetry: {
       focus: {
-        title: 'AI-Augmented Systems',
-        text: 'Architecting decoupled full-stack systems, designing component and API contracts, and directing generative AI co-pilots for rapid code implementation.',
+        title: 'Digital director',
+        text: 'A digital director transforming and optimising business processes through the design of software architectures, web solutions and multi-platform ecosystems.',
       },
       past: {
         title: 'Multidisciplinary trader',
         text: 'A trader with a divergent read on market psychology and fraud analysis, with more than 6 approved trading approaches and well over 10 strategies built and backtested.',
       },
       profile: {
-        role: 'Developer & Analyst',
+        role: 'Developer & Director & Analyst',
       },
     },
 

@@ -121,7 +121,7 @@ export default function Navbar({ isHeroPage }) {
           onClick={playClickSound}
           style={{ textDecoration: 'none', color: '#fff', fontSize: '1.5rem', fontWeight: 700, letterSpacing: '0.1em' }}
         >
-          <ConvexText text="DAN" />
+          <ConvexText text="D∆N" />
         </Link>
       </div>
 
@@ -142,7 +142,7 @@ export default function Navbar({ isHeroPage }) {
             className="mobile-brand-link font-label uppercase text-glow"
             onClick={() => { playClickSound(); setMobileMenuOpen(false); }}
           >
-            Dan
+            D∆N
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -233,8 +233,7 @@ export default function Navbar({ isHeroPage }) {
 
         <div className="mobile-drawer-footer font-label">
           <div className="mobile-footer-meta text-gray">
-            <span>FULL STACK DEVELOPER & AIML</span>
-            <span>PORTFOLIO v2.0</span>
+            <span>D∆N</span>
           </div>
         </div>
       </div>

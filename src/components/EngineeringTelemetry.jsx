@@ -29,7 +29,7 @@ export default function EngineeringTelemetry() {
           </p>
           <div className="telemetry-meta-row text-gray">
             <span>CORE STACK:</span>
-            <span className="meta-highlight">Next.js, Vercel, Claude Code, Google Gemini</span>
+            <span className="meta-highlight">Node.js, Next.js, Three.js, GSAP, Claude Code, Google Gemini, Vercel</span>
           </div>
         </div>
 
