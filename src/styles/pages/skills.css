@@ -279,13 +279,26 @@
 }
 
 @media (max-width: 640px) {
-  .skills-orbital-viewport {
-    height: 480px;
-    perspective: 800px;
+  /* The ring is the only thing in this section and on a phone it is short,
+     so the 125vh floor and the wide-screen padding were leaving a third of a
+     screen of nothing under the cards. */
+  .skills-page-section {
+    min-height: 0;
+    padding-top: 5rem;
+    padding-bottom: 3.5rem;
   }
+
+  .skills-orbital-viewport {
+    height: 430px;
+    perspective: 800px;
+    /* The cards are taller than this box and overflow it evenly, so the top
+       margin is what keeps them off the rule under the heading. */
+    margin: 2.25rem 0 1rem;
+  }
+
   .skill-orbital-card {
     width: 290px;
-    min-height: 395px;
+    min-height: 345px;
     transform: translate3d(
       calc(var(--card-sin) * 220px),
       calc(var(--card-cos) * -12px),
@@ -300,6 +313,25 @@
   }
   .orbital-card-inner {
     padding: 1.35rem 1.25rem;
+  }
+
+  /* A notch down across the card. Smaller pills are what does the real work:
+     more of them fit per row, so the longest list loses rows rather than the
+     card gaining height. */
+  .skill-card-title {
+    font-size: 1.12rem;
+  }
+  .skill-card-summary {
+    font-size: 0.79rem;
+  }
+  .skill-pill {
+    font-size: 0.66rem;
+    padding: 0.26rem 0.58rem;
+  }
+  .orbital-telemetry-badge {
+    font-size: 0.63rem;
+    padding: 0.4rem 0.65rem;
+    margin-bottom: 1rem;
   }
 }
 
