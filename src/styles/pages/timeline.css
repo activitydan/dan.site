@@ -165,6 +165,17 @@
   box-sizing: border-box;
 }
 
+/* Slides sit edge to edge in the track, so the next card's drop shadow spills
+   back over this one and eats about a third of its right border: measured
+   across the middle of a card, the left edge reads 237 and the right 143. The
+   off-screen cards are clipped by the shell, so that spill is the only thing
+   their shadow ever draws; dropping it leaves the visible card's border even.
+   Not with a z-index on the visible slide: the stacking context that creates
+   changes what the card's backdrop-filter has to sample. */
+.timeline-card-slide:not(.is-active) .timeline-stage-card {
+  box-shadow: none;
+}
+
 /* --------------------------------------------------------------------------
    Stage Split-Pane Card
    -------------------------------------------------------------------------- */
