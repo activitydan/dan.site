@@ -108,9 +108,11 @@ export default function Butterflies({ isHeroPage = true }) {
       if (!mounted) return;
       try {
         // Each butterfly is 32 double-sided triangles, so the grid size is
-        // the main cost: 68x68 is ~4600 of them, ~148k triangles a frame.
+        // the main cost: 67x67 is ~4500 of them, ~144k triangles a frame.
         // Weak GPUs and phones get a smaller swarm, which still fills the
         // frame because the individuals are what read, not the count.
+        // The count is the square of this number, so it only moves in steps:
+        // 67 is 4489 and 39 is 1521.
         const cpuCores = navigator.hardwareConcurrency || 8;
         const deviceMemory = navigator.deviceMemory || 8;
         const isLowPowerDevice = cpuCores <= 4 || deviceMemory <= 4;
@@ -118,7 +120,7 @@ export default function Butterflies({ isHeroPage = true }) {
 
         instance = butterfliesBackground({
           el,
-          gpgpuSize: isLowPowerDevice || isSmallViewport ? 40 : 68,
+          gpgpuSize: isLowPowerDevice || isSmallViewport ? 39 : 67,
           background: 0x050505,
           material: 'basic',
           // alphaTest alone cuts the sprite's background, and leaving the
@@ -143,6 +145,20 @@ export default function Butterflies({ isHeroPage = true }) {
           antialias: false,
         });
         instanceRef.current = instance;
+
+        // A phone sees the swarm a little smaller. The library pins the camera
+        // to (0, 50, 70) and takes no override, so the distance is set here
+        // afterwards, along the same line so the framing and the angle are
+        // untouched: only how far away it stands. Nothing is unlocked by this
+        // — orbitControls stays false and the camera is set once, never from
+        // an input — and the resize handler only ever touches the aspect, so
+        // it survives a rotation.
+        if (isSmallViewport) {
+          const PULL_BACK = 1.12;
+          instance.three.camera.position.set(0, 50 * PULL_BACK, 70 * PULL_BACK);
+          instance.three.camera.lookAt(0, 0, 0);
+        }
+
         // Landing on another route mounts the swarm already hidden, so it
         // must start paused rather than wait for the first route change.
         instance.three.setPaused(shouldPause());
