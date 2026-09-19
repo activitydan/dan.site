@@ -248,18 +248,19 @@ export default function Timeline() {
                     <div className="timeline-simulation-pane">
                       {isPhilosophy ? (
                         <div className="philosophy-figures">
-                          {/* In this order each figure sits beside the passage
-                              that describes it: the delta, then the triangle. */}
-                          <div className="philosophy-figure">
-                            <span className="philosophy-glyph" aria-hidden="true">Δ</span>
-                          </div>
-                          <span className="philosophy-figures-divider" />
+                          {/* Triangle above the rule, delta below. The passages
+                              are ordered to match, so each one sits beside the
+                              figure it describes. */}
                           <div className="philosophy-figure">
                             <img
                               src={penroseTriangle}
                               alt="Triangolo di Penrose"
                               className="philosophy-figure-img"
                             />
+                          </div>
+                          <span className="philosophy-figures-divider" />
+                          <div className="philosophy-figure">
+                            <span className="philosophy-glyph" aria-hidden="true">Δ</span>
                           </div>
                         </div>
                       ) : (
