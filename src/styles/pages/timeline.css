@@ -163,6 +163,13 @@
   flex: 0 0 100%;
   min-width: 100%;
   box-sizing: border-box;
+  /* The slides already stretch to the tallest one, being flex items of the
+     track, but the card inside is a plain block and kept its own height: at
+     975px stage 01 came out 523px against stage 02's 535, so its outline was
+     visibly shorter. Making the slide a flex container hands the card the
+     same stretch, so every stage is the height of the tallest at any width,
+     and the strip of empty shell under the shorter ones goes with it. */
+  display: flex;
 }
 
 /* --------------------------------------------------------------------------
