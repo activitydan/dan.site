@@ -45,6 +45,14 @@ header.hero-container {
   -webkit-background-clip: text;
   background-clip: text;
   margin-bottom: 1.5rem;
+  /* letter-spacing is applied after the last letter too, so with a negative
+     value the box ends 0.04em short of the final R. background-clip: text
+     then stops the gradient there and the last sliver of the glyph is left
+     with nothing but its 1px stroke, which reads as a vertical cut. The
+     padding gives the fill somewhere to land; the matching negative margin
+     keeps the outer width, so the centred text does not shift. */
+  padding-right: 0.06em;
+  margin-right: -0.06em;
 }
 
 /* Interactive 3D Holographic Globe CTA */
