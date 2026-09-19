@@ -94,53 +94,15 @@ export default function Butterflies({ isHeroPage = true }) {
 
     let mounted = true;
     let instance = null;
-    let monitorId = null;
 
-    // The library fixes the instance count when it builds the mesh, but
-    // three.js happily draws fewer than were allocated. That lets the swarm
-    // thin itself out on hardware that cannot keep up, which a core count
-    // alone cannot predict. Start positions are randomised on every axis, so
-    // dropping the tail of the instances just makes the swarm sparser.
-    const THIN_BELOW_FPS = 45;
-    // The gap between the two thresholds is the hysteresis: a swarm sitting
-    // between 45 and 58fps is left alone rather than pumped up and down.
-    const RESTORE_ABOVE_FPS = 58;
-    const MIN_COUNT_RATIO = 0.35;
-
-    const watchFrameRate = (swarm) => {
-      const fullCount = swarm.count;
-      const floor = Math.round(fullCount * MIN_COUNT_RATIO);
-      const thinAboveMs = 1000 / THIN_BELOW_FPS;
-      const restoreBelowMs = 1000 / RESTORE_ABOVE_FPS;
-      let samples = [];
-      let last = performance.now();
-
-      const tick = (now) => {
-        monitorId = window.requestAnimationFrame(tick);
-        const delta = now - last;
-        last = now;
-        // A paused swarm, and a tab coming back from the background, both
-        // report deltas that say nothing about how fast we can draw.
-        if (shouldPause() || delta > 250) {
-          samples = [];
-          return;
-        }
-        samples.push(delta);
-        if (samples.length < 60) return;
-        samples.sort((a, b) => a - b);
-        const median = samples[samples.length >> 1];
-        samples = [];
-        if (median > thinAboveMs && swarm.count > floor) {
-          swarm.count = Math.max(floor, Math.round(swarm.count * 0.8));
-        } else if (median < restoreBelowMs && swarm.count < fullCount) {
-          // Recover from a transient stall, such as the page still settling
-          // at load, instead of staying thinned out for the whole session.
-          swarm.count = Math.min(fullCount, Math.round(swarm.count * 1.1) + 1);
-        }
-      };
-
-      monitorId = window.requestAnimationFrame(tick);
-    };
+    // Nothing here watches the frame rate and lowers the instance count. That
+    // was tried and it is visible: thinning the swarm raises the frame rate,
+    // which trips the restore, which lowers it again, so the count never
+    // settles and butterflies blink in and out for the whole session. Measured
+    // over 32s it swung 1600 -> 819 -> 1209 -> 938 and kept going. Widening
+    // the hysteresis only slows the pump down. The size of the swarm is
+    // decided once below, before the first frame, where nobody can see it
+    // change; if it needs to come down, lower gpgpuSize.
 
     const init = () => {
       if (!mounted) return;
@@ -184,8 +146,6 @@ export default function Butterflies({ isHeroPage = true }) {
         // Landing on another route mounts the swarm already hidden, so it
         // must start paused rather than wait for the first route change.
         instance.three.setPaused(shouldPause());
-        const swarm = instance.three.scene.children.find((o) => o.isInstancedMesh);
-        if (swarm) watchFrameRate(swarm);
       } catch (err) {
         console.error('butterflies init failed:', err);
       }
@@ -203,7 +163,6 @@ export default function Butterflies({ isHeroPage = true }) {
       mounted = false;
       if (idleHandle !== undefined) window.cancelIdleCallback?.(idleHandle);
       if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
-      if (monitorId !== null) window.cancelAnimationFrame(monitorId);
       instanceRef.current = null;
       // Without this the library keeps its render loop, resize listener and
       // WebGL context alive; StrictMode's double mount would leave two.
