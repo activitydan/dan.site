@@ -18,12 +18,6 @@ export default function About() {
             <p className="text-gray about-text">
               {t('about.bio')}
             </p>
-            <div className="font-label text-gray skill-list text-sm">
-              <p><span style={{ color: '#fff' }}></span> System Architecture & Data Flows</p>
-              <p><span style={{ color: '#fff' }}></span> AI-Augmented Code Synthesis & Prompting</p>
-              <p><span style={{ color: '#fff' }}></span> UI Layout Craft (HTML, CSS, GSAP, Framer Motion, Three.js, etc.)</p>
-              <p><span style={{ color: '#fff' }}></span> Cloud & Edge Deployments (Cloudflare & Vercel)</p>
-            </div>
           </div>
 
           <div className="abstract-box hoverable gsap-reveal">
