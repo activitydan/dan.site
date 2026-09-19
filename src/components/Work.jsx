@@ -69,7 +69,7 @@ export default function Work() {
   return (
     <section id="work" className="container work-page-section">
       <div className="gsap-reveal work-header">
-        <MaskedTitle number="2." text="Featured Work" />
+        <MaskedTitle number="2." text="Spazio Desk" />
         <div className="divider" />
       </div>
 
