@@ -11,6 +11,18 @@ html.lenis, html.lenis body {
   overscroll-behavior: contain;
 }
 
+/* Reserve the scrollbar's strip whether or not a scrollbar is showing. The
+   rule below hides overflow on <html>, and transitionTo() stops Lenis on every
+   route change, so on a desktop with classic scrollbars the bar vanished and
+   came back mid-transition: the content area grew 15px and everything centred
+   on the page jumped ~7px right, then back. Sampled through about -> work, the
+   root really does go visible -> hidden -> visible. The hero was the one page
+   that never flickered, because it is stopped already and has no bar to lose.
+   Phones use overlay scrollbars, which take no space, so they never saw it. */
+html {
+  scrollbar-gutter: stable;
+}
+
 .lenis.lenis-stopped {
   overflow: hidden;
 }
