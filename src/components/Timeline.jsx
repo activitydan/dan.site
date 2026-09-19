@@ -207,10 +207,18 @@ export default function Timeline() {
                           <span className="stage-step-tag text-gray">{item.stageLabel}</span>
                         </div>
 
+                        {/* The frame the other stages put around their
+                            visualizer, and only the frame: the figures stay in
+                            the card's grid so each can sit on the last line of
+                            its passage, and they paint over this. */}
+                        <div className="timeline-simulation-pane philosophy-pane-frame" aria-hidden="true" />
+
                         {item.philosophies.map((passage, pIdx) => (
                           <Fragment key={pIdx}>
-                            <p className="stage-philosophy uppercase">{passage}</p>
-                            <div className="philosophy-figure">{PHILOSOPHY_FIGURES[pIdx]}</div>
+                            <p className={`stage-philosophy uppercase philosophy-row-${pIdx + 2}`}>{passage}</p>
+                            <div className={`philosophy-figure philosophy-row-${pIdx + 2}`}>
+                              {PHILOSOPHY_FIGURES[pIdx]}
+                            </div>
                           </Fragment>
                         ))}
                       </>

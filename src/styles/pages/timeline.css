@@ -427,11 +427,17 @@
 
 /* ---- Philosophy stage -------------------------------------------------
    A stage that carries two short passages instead of metrics and a tech
-   list. It has no narrative/simulation split: the passages and the figures
-   that answer them are direct children of the card's own grid, one passage
-   and one figure per row, so a figure can be tied to the text beside it. */
+   list. The right-hand pane is still there, framed as on every other stage,
+   but it is only a frame: the passages and the figures that answer them are
+   direct children of the card's own grid, one passage and one figure per
+   row, so a figure can be tied to the text beside it. */
 
 .timeline-stage-card-philosophy {
+  /* One row for the stage number, then one per passage. Spelled out because
+     the frame spans them all, which would otherwise leave auto-placement
+     nowhere to put the figures. Two passages, the same count as
+     PHILOSOPHY_FIGURES in Timeline.jsx. */
+  grid-template-rows: auto auto auto;
   /* Rows are as tall as whichever side is taller, and the short side drops
      to the bottom of the row. `end` lines the boxes up; `last baseline`,
      where it is understood, lines up the ink instead — the delta sits on
@@ -442,9 +448,20 @@
 
 .philosophy-topbar {
   grid-column: 1;
+  grid-row: 1;
   /* Only the stage number is left, so there is nothing for the topbar's
      space-between to push it against. */
   justify-content: flex-end;
+}
+
+/* The same box the other stages frame their visualizer in, spanning the whole
+   right column. The figures are placed over it row by row rather than inside
+   it, which is what keeps each one tied to its passage. */
+.philosophy-pane-frame {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  /* The card aligns its items on a baseline, and an empty box has none. */
+  align-self: stretch;
 }
 
 .timeline-stage-card-philosophy > .stage-philosophy {
@@ -453,6 +470,14 @@
 
 .timeline-stage-card-philosophy > .philosophy-figure {
   grid-column: 2;
+}
+
+.philosophy-row-2 {
+  grid-row: 2;
+}
+
+.philosophy-row-3 {
+  grid-row: 3;
 }
 
 .stage-philosophy {
@@ -469,6 +494,11 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  /* The frame's backdrop-filter makes it a stacking context, and those paint
+     after plain in-flow siblings however early they come in the markup. The
+     figures have to be lifted or the frame blurs them into it. */
+  position: relative;
+  z-index: 1;
 }
 
 .philosophy-figure-img {
@@ -485,21 +515,30 @@
   font-weight: 700;
   line-height: 1;
   color: #ffffff;
-  /* A delta has no descender, but its line box still reserves room for one,
-     and at this size that is a good 30px of empty space hanging below the
-     last row. Pulled back so the card's bottom padding reads even. */
-  margin-bottom: -0.2em;
 }
 
 @media (max-width: 960px) {
   /* The card is one column wide here, so the forced tracks above would
-     conjure a second one instead of stacking each figure under its passage. */
+     conjure a second one instead of stacking each figure under its passage,
+     and the placed rows would stack a figure on top of its own passage. */
   .timeline-stage-card-philosophy > .stage-philosophy,
   .timeline-stage-card-philosophy > .philosophy-figure {
     grid-column: 1;
   }
 
+  .philosophy-row-2,
+  .philosophy-row-3 {
+    grid-row: auto;
+  }
+
   .timeline-stage-card-philosophy {
+    grid-template-rows: none;
     row-gap: 1.75rem;
+  }
+
+  /* Each figure sits under its own passage in this layout, so one frame
+     around the column would end up behind the text as well. */
+  .philosophy-pane-frame {
+    display: none;
   }
 }
