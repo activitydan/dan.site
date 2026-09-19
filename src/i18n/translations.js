@@ -76,16 +76,16 @@ export const translations = {
     skills: {
       categories: [
         {
-          title: 'Frontend e cura dell’interfaccia',
-          summary: 'Layout responsive, ottimizzazione completa, struttura a componenti, stili puliti ed esperienze curate nel dettaglio.',
+          title: 'Frontend e interfacce',
+          summary: 'Layout responsive, struttura a componenti e stili puliti, curati nel dettaglio.',
         },
         {
-          title: 'AI generativa e costruzione dei prompt',
-          summary: 'Schemi di prompt precisi e modelli LLM diretti all’automazione del codice e allo sviluppo assistito con Claude Code e strumenti AI.',
+          title: 'AI generativa e prompt',
+          summary: 'Schemi di prompt precisi e LLM diretti all’automazione del codice con Claude Code.',
         },
         {
-          title: 'Analisi dati e architettura di memorizzazione',
-          summary: 'Specialista nella modellazione di dati complessi e calcolo analitico. Progetto e ottimizzo il bilanciamento tra design, efficienza e prestazioni di archiviazione dati, integrando modelli quantitativi e strutturando Web App dedicate.',
+          title: 'Dati e architettura',
+          summary: 'Modellazione di dati complessi, calcolo analitico e Web App dedicate.',
         },
         {
           title: 'Cloud e distribuzione',
@@ -228,16 +228,16 @@ export const translations = {
     skills: {
       categories: [
         {
-          title: 'Frontend & UI Craft (Hands-On)',
-          summary: 'Responsive layouts, full optimisation, component structure, clean styling, and high-fidelity user experiences.',
+          title: 'Frontend & UI Craft',
+          summary: 'Responsive layouts, component structure and clean, detailed styling.',
         },
         {
-          title: 'Generative AI & Prompt Design',
-          summary: 'Precise prompt schemas and LLMs directed at code automation and AI-assisted development with Claude Code and other AI tools.',
+          title: 'Generative AI & Prompts',
+          summary: 'Precise prompt schemas and LLMs directed at code automation with Claude Code.',
         },
         {
-          title: 'Data Analysis & Storage Architecture',
-          summary: 'Specialised in modelling complex data and analytical computation. I design and tune the balance between design, efficiency and data storage performance, integrating quantitative models and building dedicated web apps.',
+          title: 'Data & Architecture',
+          summary: 'Modelling complex data, analytical computation and dedicated web apps.',
         },
         {
           title: 'Cloud & Deployment',
