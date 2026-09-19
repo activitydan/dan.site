@@ -106,6 +106,7 @@ export const translations = {
       items: [
         {
           title: 'Basi del web e logica di programmazione',
+          headline: 'HTML5, CSS3 e fondamenti di programmazione',
           summary:
             'Ho iniziato a studiare logica di programmazione e sviluppo web a dicembre 2025. Ho imparato la struttura del frontend con HTML5, CSS3 e il CSS moderno, costruendo allo stesso tempo le basi del problem solving con Java, JavaScript e Python.',
         },
@@ -258,6 +259,7 @@ export const translations = {
       items: [
         {
           title: 'Web Foundations & Core Logic',
+          headline: 'HTML5, CSS3 & Programming Basics',
           summary:
             'Started exploring programming logic and web development in December 2025. Mastered core frontend structure with HTML5, CSS3, and modern CSS, while building foundational problem-solving skills in Java, JavaScript, and Python.',
         },
