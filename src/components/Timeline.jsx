@@ -24,12 +24,10 @@ export default function Timeline() {
       stageLabel: 'STAGE 01',
       category: 'THE SPARK',
       dockLabel: 'FOUNDATIONS',
-      metrics: [
-        { label: 'Timeline', value: 'Dec 2025 – Mar 2026' },
-        { label: 'Focus', value: 'Web Foundations' },
-        { label: 'Core Tools', value: 'HTML, CSS & Java' }
-      ],
-      techStack: ['HTML5', 'CSS3', 'Tailwind CSS', 'JavaScript', 'Java', 'Git'],
+      // No metric boxes and no tech pills on this stage, so the blocks
+      // below render nothing for it.
+      metrics: [],
+      techStack: [],
       Visualizer: WebArchitectureCanvas
     },
     {
@@ -130,7 +128,7 @@ export default function Timeline() {
       {/* Aligned Section Header matching #about, #work, #skills */}
       <div className="timeline-header">
         <div className="gsap-reveal">
-          <MaskedTitle text="Engineering Journey" />
+          <MaskedTitle text="Philosophies" />
           <div className="divider" />
         </div>
         <div className="timeline-header-meta font-label">
@@ -205,29 +203,35 @@ export default function Timeline() {
 
                       <div className="stage-title-wrap">
                         <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                        <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
+                        {item.headline && (
+                          <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
+                        )}
                       </div>
 
-                      <p className="stage-summary text-gray">{item.summary}</p>
+                      <p className="stage-summary text-gray uppercase">{item.summary}</p>
 
                       {/* Telemetry Metrics Grid */}
-                      <div className="stage-metrics-grid font-label">
-                        {item.metrics.map((m, mIdx) => (
-                          <div key={mIdx} className="stage-metric-box">
-                            <span className="metric-lbl text-gray">{m.label}</span>
-                            <span className="metric-val">{m.value}</span>
-                          </div>
-                        ))}
-                      </div>
+                      {item.metrics.length > 0 && (
+                        <div className="stage-metrics-grid font-label">
+                          {item.metrics.map((m, mIdx) => (
+                            <div key={mIdx} className="stage-metric-box">
+                              <span className="metric-lbl text-gray">{m.label}</span>
+                              <span className="metric-val">{m.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Tech Stack Pills matching .skill-pill */}
-                      <div className="stage-tech-pills font-label">
-                        {item.techStack.map((tech, tIdx) => (
-                          <span key={tIdx} className="stage-pill">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                      {item.techStack.length > 0 && (
+                        <div className="stage-tech-pills font-label">
+                          {item.techStack.map((tech, tIdx) => (
+                            <span key={tIdx} className="stage-pill">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Right Pane: 2D Live Visualizer Canvas */}
