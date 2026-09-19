@@ -441,11 +441,14 @@
 .philosophy-figures {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* No align-items: on a column flex container that shrinks each row to its
+     content width, which then becomes the box a percentage max-width resolves
+     against — the figures were being narrowed twice over. Stretched rows let
+     each figure use the full pane, and the flex row below centres it. */
   height: 100%;
   width: 100%;
-  padding: 1.5rem;
-  gap: 1.5rem;
+  padding: 0.5rem;
+  gap: 1rem;
   box-sizing: border-box;
 }
 
@@ -458,10 +461,10 @@
 }
 
 .philosophy-figure-img {
+  /* Height is what binds now: each row is roughly half the pane, so the
+     triangle grows until it fills that and stops. */
   max-height: 100%;
-  /* The pane is much wider than it is tall per figure, so height is what
-     actually constrains these; the cap stops the triangle sprawling. */
-  max-width: 46%;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -473,16 +476,22 @@
 }
 
 .philosophy-glyph {
-  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-size: clamp(4.5rem, 11vw, 9.5rem);
   font-weight: 700;
   line-height: 1;
   color: #ffffff;
 }
 
-@media (max-width: 768px) {
-  .philosophy-figure-img {
-    max-width: 62%;
-  }
+/* On a philosophy card the pane is only where the figures sit, so it drops
+   the framing and they read as part of the card rather than as a screen
+   embedded in it. */
+.timeline-simulation-pane-bare {
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* With the category and date gone from a philosophy card, space-between has

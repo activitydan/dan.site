@@ -245,7 +245,7 @@ export default function Timeline() {
 
                     {/* Right Pane: a live visualizer, or for a philosophy
                         stage the two figures the passages refer to */}
-                    <div className="timeline-simulation-pane">
+                    <div className={`timeline-simulation-pane${isPhilosophy ? ' timeline-simulation-pane-bare' : ''}`}>
                       {isPhilosophy ? (
                         <div className="philosophy-figures">
                           {/* Triangle above the rule, delta below. The passages
