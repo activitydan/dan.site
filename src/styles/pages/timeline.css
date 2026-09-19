@@ -461,9 +461,9 @@
 }
 
 .philosophy-figure-img {
-  /* Height is what binds now: each row is roughly half the pane, so the
-     triangle grows until it fills that and stops. */
-  max-height: 100%;
+  /* Height is what binds: each row is roughly half the pane. Held just under
+     full so the triangle does not sit tight against the rule. */
+  max-height: 88%;
   max-width: 100%;
   object-fit: contain;
 }
@@ -476,7 +476,7 @@
 }
 
 .philosophy-glyph {
-  font-size: clamp(4.5rem, 11vw, 9.5rem);
+  font-size: clamp(5rem, 12vw, 11rem);
   font-weight: 700;
   line-height: 1;
   color: #ffffff;
