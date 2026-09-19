@@ -165,6 +165,15 @@
   box-sizing: border-box;
 }
 
+/* Slides sit edge to edge in the track, so the next card's drop shadow spills
+   back over this one and eats about a third of its right border — which only
+   shows on a card with nothing framed against that edge. Painting the visible
+   slide last puts its border back on top of the neighbour's shadow. */
+.timeline-card-slide.is-active {
+  position: relative;
+  z-index: 1;
+}
+
 /* --------------------------------------------------------------------------
    Stage Split-Pane Card
    -------------------------------------------------------------------------- */
@@ -415,22 +424,37 @@
 
 /* ---- Philosophy stage -------------------------------------------------
    A stage that carries two short passages instead of metrics and a tech
-   list, each answered by a figure in the right-hand pane. The mockup for
-   this is a square; this pane is far wider, so the figures are capped
-   rather than stretched to fill it. */
+   list. It has no narrative/simulation split: the passages and the figures
+   that answer them are direct children of the card's own grid, one passage
+   and one figure per row, so a figure can be tied to the text beside it. */
 
-.stage-philosophy-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  gap: 2rem;
-  flex: 1;
-  margin-top: 1.25rem;
+.timeline-stage-card-philosophy {
+  /* Rows are as tall as whichever side is taller, and the short side drops
+     to the bottom of the row. `end` lines the boxes up; `last baseline`,
+     where it is understood, lines up the ink instead — the delta sits on
+     the last line of its passage rather than a descender's height below it. */
+  align-items: end;
+  align-items: last baseline;
+}
+
+.philosophy-topbar {
+  grid-column: 1;
+  /* Only the stage number is left, so there is nothing for the topbar's
+     space-between to push it against. */
+  justify-content: flex-end;
+}
+
+.timeline-stage-card-philosophy > .stage-philosophy {
+  grid-column: 1;
+}
+
+.timeline-stage-card-philosophy > .philosophy-figure {
+  grid-column: 2;
 }
 
 .stage-philosophy {
   /* Same metrics as .stage-title: these passages are the card's content, not
-     a caption under it. Sentence case, though, so no text-transform. */
+     a caption under it. */
   color: #ffffff;
   font-size: 1.65rem;
   font-weight: 700;
@@ -438,41 +462,19 @@
   letter-spacing: -0.01em;
 }
 
-.philosophy-figures {
-  display: flex;
-  flex-direction: column;
-  /* No align-items: on a column flex container that shrinks each row to its
-     content width, which then becomes the box a percentage max-width resolves
-     against — the figures were being narrowed twice over. Stretched rows let
-     each figure use the full pane, and the flex row below centres it. */
-  height: 100%;
-  width: 100%;
-  padding: 0.5rem;
-  gap: 1rem;
-  box-sizing: border-box;
-}
-
 .philosophy-figure {
   display: flex;
-  flex: 1;
-  min-height: 0;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
 }
 
 .philosophy-figure-img {
-  /* Height is what binds: each row is roughly half the pane. Held just under
-     full so the triangle does not sit tight against the rule. */
-  max-height: 88%;
+  /* A definite height, because the row is now sized by its passage: there is
+     no pane left for a percentage to resolve against. */
+  height: clamp(7.5rem, 12.5vw, 11.5rem);
+  width: auto;
   max-width: 100%;
   object-fit: contain;
-}
-
-.philosophy-figures-divider {
-  flex: none;
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.18);
 }
 
 .philosophy-glyph {
@@ -480,22 +482,21 @@
   font-weight: 700;
   line-height: 1;
   color: #ffffff;
+  /* A delta has no descender, but its line box still reserves room for one,
+     and at this size that is a good 30px of empty space hanging below the
+     last row. Pulled back so the card's bottom padding reads even. */
+  margin-bottom: -0.2em;
 }
 
-/* On a philosophy card the pane is only where the figures sit, so it drops
-   the framing and they read as part of the card rather than as a screen
-   embedded in it. */
-.timeline-simulation-pane-bare {
-  background: none;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
+@media (max-width: 960px) {
+  /* The card is one column wide here, so the forced tracks above would
+     conjure a second one instead of stacking each figure under its passage. */
+  .timeline-stage-card-philosophy > .stage-philosophy,
+  .timeline-stage-card-philosophy > .philosophy-figure {
+    grid-column: 1;
+  }
 
-/* With the category and date gone from a philosophy card, space-between has
-   nothing to push against, so the stage number is pinned right on its own. */
-.stage-topbar > .stage-step-tag:only-child {
-  margin-left: auto;
+  .timeline-stage-card-philosophy {
+    row-gap: 1.75rem;
+  }
 }

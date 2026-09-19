@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { Fragment, useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAudio } from '../hooks/useAudio';
 import {
   ChatUpSocketStreamCanvas,
@@ -8,6 +8,12 @@ import {
 import MaskedTitle from './MaskedTitle';
 import penroseTriangle from '../assets/penrose-triangle.png';
 import { useLanguage } from '../i18n/context';
+
+// The figures a philosophy stage answers its passages with, in passage order.
+const PHILOSOPHY_FIGURES = [
+  <img src={penroseTriangle} alt="Triangolo di Penrose" className="philosophy-figure-img" />,
+  <span className="philosophy-glyph" aria-hidden="true">Δ</span>,
+];
 
 export default function Timeline() {
   const { playHoverSound, playClickSound } = useAudio();
@@ -189,36 +195,42 @@ export default function Timeline() {
                   }}
                 >
                   {/* Stage Container Card */}
-                  <div className="timeline-stage-card hoverable">
-                    {/* Left Pane: Narrative & Technical Telemetry */}
-                    <div className="timeline-narrative-pane">
-                      <div className="stage-topbar font-label">
-                        {/* A philosophy card is not a dated milestone, so it
-                            carries only its stage number. */}
-                        {!isPhilosophy && (
-                          <div className="stage-topbar-left">
-                            <span className="stage-badge uppercase">{item.category}</span>
-                            <span className="stage-date uppercase">{item.date}</span>
+                  <div className={`timeline-stage-card hoverable${isPhilosophy ? ' timeline-stage-card-philosophy' : ''}`}>
+                    {isPhilosophy ? (
+                      /* A philosophy stage drops the narrative/simulation
+                         split. Each passage and the figure that answers it
+                         share a row of the card's own grid, so the figure
+                         lands on the passage's last line however it wraps. */
+                      <>
+                        <div className="stage-topbar font-label philosophy-topbar">
+                          {/* Not a dated milestone, so only the stage number. */}
+                          <span className="stage-step-tag text-gray">{item.stageLabel}</span>
+                        </div>
+
+                        {item.philosophies.map((passage, pIdx) => (
+                          <Fragment key={pIdx}>
+                            <p className="stage-philosophy uppercase">{passage}</p>
+                            <div className="philosophy-figure">{PHILOSOPHY_FIGURES[pIdx]}</div>
+                          </Fragment>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        {/* Left Pane: Narrative & Technical Telemetry */}
+                        <div className="timeline-narrative-pane">
+                          <div className="stage-topbar font-label">
+                            <div className="stage-topbar-left">
+                              <span className="stage-badge uppercase">{item.category}</span>
+                              <span className="stage-date uppercase">{item.date}</span>
+                            </div>
+                            <span className="stage-step-tag text-gray">{item.stageLabel}</span>
                           </div>
-                        )}
-                        <span className="stage-step-tag text-gray">{item.stageLabel}</span>
-                      </div>
 
-                      {!isPhilosophy && (
-                        <div className="stage-title-wrap">
-                          <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                          <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
-                        </div>
-                      )}
+                          <div className="stage-title-wrap">
+                            <h3 className="stage-title uppercase text-glow">{item.title}</h3>
+                            <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
+                          </div>
 
-                      {isPhilosophy ? (
-                        <div className="stage-philosophy-list">
-                          {item.philosophies.map((passage, pIdx) => (
-                            <p key={pIdx} className="stage-philosophy uppercase">{passage}</p>
-                          ))}
-                        </div>
-                      ) : (
-                        <>
                           <p className="stage-summary text-gray">{item.summary}</p>
 
                           {/* Telemetry Metrics Grid */}
@@ -239,36 +251,16 @@ export default function Timeline() {
                               </span>
                             ))}
                           </div>
-                        </>
-                      )}
-                    </div>
+                        </div>
 
-                    {/* Right Pane: a live visualizer, or for a philosophy
-                        stage the two figures the passages refer to */}
-                    <div className={`timeline-simulation-pane${isPhilosophy ? ' timeline-simulation-pane-bare' : ''}`}>
-                      {isPhilosophy ? (
-                        <div className="philosophy-figures">
-                          {/* Triangle above the rule, delta below. The passages
-                              are ordered to match, so each one sits beside the
-                              figure it describes. */}
-                          <div className="philosophy-figure">
-                            <img
-                              src={penroseTriangle}
-                              alt="Triangolo di Penrose"
-                              className="philosophy-figure-img"
-                            />
-                          </div>
-                          <span className="philosophy-figures-divider" />
-                          <div className="philosophy-figure">
-                            <span className="philosophy-glyph" aria-hidden="true">Δ</span>
+                        {/* Right Pane: 3D Interactive Spatial Viewport */}
+                        <div className="timeline-simulation-pane">
+                          <div className="terminal-canvas-wrapper">
+                            <Visualizer isActive={isActive} />
                           </div>
                         </div>
-                      ) : (
-                        <div className="terminal-canvas-wrapper">
-                          <Visualizer isActive={isActive} />
-                        </div>
-                      )}
-                    </div>
+                      </>
+                    )}
                   </div>
                 </div>
               );
