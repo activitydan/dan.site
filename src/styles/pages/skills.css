@@ -9,7 +9,14 @@
   min-height: 125vh;
   position: relative;
   width: 100%;
-  overflow: visible;
+  /* The ring throws cards, rings and a floor glow well past the page on a
+     narrow screen: 638px of content in a 390px viewport. That overflow made
+     the whole document wider, and a fixed dock centred with left: 50% then
+     centred itself on 638 instead of 390 and hung off the right edge. Clip
+     rather than hide, so the cards can still bleed vertically out of the
+     stage the way the 3D effect needs. */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .skills-header {
@@ -285,22 +292,27 @@
   .skills-page-section {
     min-height: 0;
     padding-top: 5rem;
-    padding-bottom: 3.5rem;
+    padding-bottom: 1.25rem;
   }
 
   .skills-orbital-viewport {
     height: 430px;
     perspective: 800px;
     /* The cards are taller than this box and overflow it evenly, so the top
-       margin is what keeps them off the rule under the heading. */
-    margin: 2.25rem 0 1rem;
+       margin is what keeps them off the rule under the heading, and there is
+       nothing to add underneath: they already reach past the box's foot. */
+    margin: 2.25rem 0 0;
   }
 
   .skill-orbital-card {
     width: 290px;
     min-height: 345px;
+    /* 220px of radius put the next card 119px inside the front one: at this
+       width the ring is narrower than the cards standing on it. 350 clears
+       them, and the section clips now, so pushing the neighbours past the
+       screen edge costs nothing. */
     transform: translate3d(
-      calc(var(--card-sin) * 220px),
+      calc(var(--card-sin) * 350px),
       calc(var(--card-cos) * -12px),
       calc(var(--card-cos) * 130px)
     ) rotateY(var(--card-rotate-y)) scale(var(--depth-scale));
