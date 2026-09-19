@@ -167,11 +167,14 @@
 
 /* Slides sit edge to edge in the track, so the next card's drop shadow spills
    back over this one and eats about a third of its right border — which only
-   shows on a card with nothing framed against that edge. Painting the visible
-   slide last puts its border back on top of the neighbour's shadow. */
-.timeline-card-slide.is-active {
-  position: relative;
-  z-index: 1;
+   shows on a card with nothing framed against that edge. The off-screen cards
+   are clipped by the shell, so that spill is the only thing their shadow ever
+   draws; dropping it leaves the visible card's border intact.
+   Not with a z-index on the visible slide: the stacking context that creates
+   changes what the card's backdrop-filter has to sample, and the card comes
+   out several shades lighter than the others. */
+.timeline-card-slide:not(.is-active) .timeline-stage-card {
+  box-shadow: none;
 }
 
 /* --------------------------------------------------------------------------
