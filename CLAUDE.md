@@ -40,18 +40,16 @@ at hand. Worth picking up during a debug or cleanup pass.
    same story: the owner supplied it for a version of timeline stage 01 that
    was reverted, and Vite only emits assets something imports, so it costs the
    build nothing.
-3. **No `.gitignore`.** `node_modules/`, `dist/` and `.wrangler/` are untracked
-   and one distracted `git add .` away from being committed.
-4. **The template author's links are still live.** The email is the owner's,
+3. **The template author's links are still live.** The email is the owner's,
    and the telemetry deck no longer carries any of these, but the rest do:
    `Footer.jsx` (GitHub `DineshS36`, the LinkedIn profile, the WhatsApp
    number), the three project repos in `Work.jsx`, and the GitHub API calls in
    `src/worker.js` that read that account's stats. The owner chose to defer
    these.
-5. **`canonical` and `og:url` point at `dinesh-portfolio.pages.dev`.** Search
+4. **`canonical` and `og:url` point at `dinesh-portfolio.pages.dev`.** Search
    engines will treat that domain as the original of this site, and social
    previews will look for the image there.
-6. **The project content is not the owner's.** The three projects in `Work.jsx`
+5. **The project content is not the owner's.** The three projects in `Work.jsx`
    and the timeline entries describe the template author's work. They are
    translated into good Italian, which makes this easy to miss.
 
