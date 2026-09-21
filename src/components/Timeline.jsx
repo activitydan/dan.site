@@ -32,7 +32,7 @@ function StageVideo({ src, isActive }) {
   return (
     <video
       ref={ref}
-      className="stage-video"
+      className="stage-video stage-video-boat"
       src={src}
       muted
       loop
@@ -239,7 +239,7 @@ export default function Timeline() {
 
                     {/* The animation slot: footage when the stage carries a
                         video, its own canvas otherwise. */}
-                    <div className="timeline-simulation-pane">
+                    <div className={`timeline-simulation-pane ${item.video ? 'is-video-stage' : ''}`}>
                       <div className="terminal-canvas-wrapper">
                         {item.video ? (
                           <StageVideo src={item.video} isActive={isActive} />
