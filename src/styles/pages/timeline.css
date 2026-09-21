@@ -235,6 +235,27 @@
   letter-spacing: 0.015em;
 }
 
+/* The line a stage lands on. Set apart by weight and tracking rather than by
+   colour, which stays the same white as the rest. */
+.stage-copy-closing {
+  color: #ffffff;
+  font-size: clamp(0.92rem, 1.15vw, 1.1rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  margin-top: 0.35rem;
+}
+
+/* Footage fills the slot the same way a canvas does: cover, so the frame is
+   always full whatever the clip's own proportions are. */
+.stage-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+}
+
 .stage-topbar {
   display: flex;
   align-items: center;

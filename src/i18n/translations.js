@@ -105,10 +105,11 @@ export const translations = {
     timeline: {
       items: [
         {
-          title: 'Basi del web e logica di programmazione',
+          title: 'Bruciare le barche',
           headline: 'HTML5, CSS3 e fondamenti di programmazione',
           summary:
-            'Ho iniziato a studiare logica di programmazione e sviluppo web a dicembre 2025. Ho imparato la struttura del frontend con HTML5, CSS3 e il CSS moderno, costruendo allo stesso tempo le basi del problem solving con Java, JavaScript e Python.',
+            'Nel 1519 Cortés arrivò sulle coste messicane con circa 500 uomini e 11 navi per conquistare l’Impero azteco. Visto che parte dell’equipaggio voleva la ritirata ed era pronta a ripartire, Cortés ordinò di distruggere la flotta.',
+          closing: 'O ce la fai o sei fottuto',
         },
         {
           title: 'ChatUp: messaggistica in tempo reale',
@@ -258,10 +259,11 @@ export const translations = {
     timeline: {
       items: [
         {
-          title: 'Web Foundations & Core Logic',
+          title: 'Burn the boats',
           headline: 'HTML5, CSS3 & Programming Basics',
           summary:
-            'Started exploring programming logic and web development in December 2025. Mastered core frontend structure with HTML5, CSS3, and modern CSS, while building foundational problem-solving skills in Java, JavaScript, and Python.',
+            'In 1519 Cortés landed on the Mexican coast with around 500 men and 11 ships to conquer the Aztec Empire. With part of his crew wanting to turn back and ready to sail, Cortés ordered the fleet destroyed.',
+          closing: 'You make it or you are finished',
         },
         {
           title: 'ChatUp: Real-Time Messaging App',

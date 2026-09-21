@@ -8,6 +8,40 @@ import {
 } from './TimelineVisualizers';
 import MaskedTitle from './MaskedTitle';
 import { useLanguage } from '../i18n/context';
+import burnTheBoats from '../assets/burn-the-boats.mp4';
+
+// A stage whose slot holds footage rather than a canvas. Muted and inline are
+// what let it start on its own on a phone; it only runs while its stage is the
+// one on screen, the same rule the canvases follow.
+function StageVideo({ src, isActive }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (isActive) {
+      const started = el.play();
+      // Autoplay can still be refused; there is nothing to do about it here
+      // and an unhandled rejection would show up as an error.
+      if (started && typeof started.catch === 'function') started.catch(() => {});
+    } else {
+      el.pause();
+    }
+  }, [isActive]);
+
+  return (
+    <video
+      ref={ref}
+      className="stage-video"
+      src={src}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden="true"
+    />
+  );
+}
 
 export default function Timeline() {
   const { playHoverSound, playClickSound } = useAudio();
@@ -24,6 +58,7 @@ export default function Timeline() {
       stageLabel: 'STAGE 01',
       category: 'THE SPARK',
       dockLabel: 'FOUNDATIONS',
+      video: burnTheBoats,
       metrics: [
         { label: 'Timeline', value: 'Dec 2025 – Mar 2026' },
         { label: 'Focus', value: 'Web Foundations' },
@@ -197,14 +232,20 @@ export default function Timeline() {
                     <div className="timeline-narrative-pane stage-copy">
                       <h3 className="stage-copy-title uppercase">{item.title}</h3>
                       <p className="stage-copy-text uppercase">{item.summary}</p>
+                      {item.closing && (
+                        <p className="stage-copy-closing uppercase">{item.closing}</p>
+                      )}
                     </div>
 
-                    {/* The animation slot. Each stage's own canvas sits in it
-                        for now; swapping in something else means changing what
-                        goes here, not the card around it. */}
+                    {/* The animation slot: footage when the stage carries a
+                        video, its own canvas otherwise. */}
                     <div className="timeline-simulation-pane">
                       <div className="terminal-canvas-wrapper">
-                        <Visualizer isActive={isActive} />
+                        {item.video ? (
+                          <StageVideo src={item.video} isActive={isActive} />
+                        ) : (
+                          <Visualizer isActive={isActive} />
+                        )}
                       </div>
                     </div>
                   </div>

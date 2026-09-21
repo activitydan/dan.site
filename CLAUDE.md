@@ -14,14 +14,14 @@ background and added the language switch.
   `portfolio` Worker). It needs Cloudflare credentials the CI container does
   not have, so the owner runs it.
 
-## Pre-existing lint baseline: 6 errors
+## Pre-existing lint baseline: 5 errors
 
-`npx eslint .` reports **6 errors** on a clean tree, and has since before this
-branch: `process` undefined in `vite.config.js` (x2), `src/worker.js` and
-`functions/api/send-email.js`; unused `ctx` in `src/worker.js`; unused `useRef`
-in `src/components/Timeline.jsx`. A run that reports 6 has introduced nothing.
-`src/lib/threejs-toys-patched.js` is excluded in `eslint.config.js` because it
-is a vendored upstream bundle.
+`npx eslint .` reports **5 errors** on a clean tree: `process` undefined in
+`vite.config.js` (x2), `src/worker.js` and `functions/api/send-email.js`; and
+unused `ctx` in `src/worker.js`. A run that reports 5 has introduced nothing.
+It was 6 until the stage video gave `useRef` in `src/components/Timeline.jsx`
+something to do. `src/lib/threejs-toys-patched.js` is excluded in
+`eslint.config.js` because it is a vendored upstream bundle.
 
 ## Known cleanup, deliberately left alone
 
@@ -85,7 +85,7 @@ at hand. Worth picking up during a debug or cleanup pass.
 There are no tests. What this repo has instead:
 
 ```
-npm run lint    # expect 6 errors, see above
+npm run lint    # expect 5 errors, see above
 npm run build
 ```
 
@@ -96,4 +96,10 @@ Helvetica Neue is not installed on Linux, and Google Fonts fails to load
 because Chromium does not trust the proxy CA, so Inter and Space Mono fall back
 too. Computed `font-family` and `font-weight` can still be asserted; the glyphs
 on screen cannot. The butterfly swarm runs on SwiftShader there, so frame times
-are useful for comparing two builds and meaningless as absolute numbers.
+are useful for comparing two builds and meaningless as absolute numbers. That
+Chromium also ships without H.264: `canPlayType('video/mp4; codecs="avc1..."')`
+comes back empty and the stage video fails with DEMUXER_ERROR_NO_SUPPORTED_
+STREAMS, so its picture cannot be checked there. The bundled ffmpeg under
+`/opt/pw-browsers/ffmpeg-1011` cannot decode it either; it is built for webm
+only. Everything around the video still can be: the element, its attributes,
+the box it fills, and that the file is served.

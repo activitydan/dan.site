@@ -10,7 +10,12 @@ nav.dock-mode {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 100px;
+  /* Squared off at the top and eased at the bottom, so the bar reads as
+     something hanging into the page rather than the floating capsule every
+     glass header defaults to. Shape only: position, blur, fill, border and
+     padding are untouched. The controls pill below takes the same corners,
+     since the two are meant to read as one bar. */
+  border-radius: 4px 4px 14px 14px;
   padding: 0.25rem 0.5rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   z-index: 1000;
@@ -361,7 +366,7 @@ nav.dock-mode .nav-inner {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 100px;
+  border-radius: 4px 4px 14px 14px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
