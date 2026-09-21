@@ -191,46 +191,17 @@ export default function Timeline() {
                     if (!isActive) playHoverSound();
                   }}
                 >
-                  {/* Stage Container Card */}
+                  {/* The card is two sides and nothing else: words on the
+                      left, a slot for a 2D or 3D animation on the right. */}
                   <div className="timeline-stage-card hoverable">
-                    {/* Left Pane: Narrative & Technical Telemetry */}
-                    <div className="timeline-narrative-pane">
-                      <div className="stage-topbar font-label">
-                        <div className="stage-topbar-left">
-                          <span className="stage-badge uppercase">{item.category}</span>
-                          <span className="stage-date uppercase">{item.date}</span>
-                        </div>
-                        <span className="stage-step-tag text-gray">{item.stageLabel}</span>
-                      </div>
-
-                      <div className="stage-title-wrap">
-                        <h3 className="stage-title uppercase text-glow">{item.title}</h3>
-                        <div className="stage-headline font-label text-gray uppercase">{item.headline}</div>
-                      </div>
-
-                      <p className="stage-summary text-gray">{item.summary}</p>
-
-                      {/* Telemetry Metrics Grid */}
-                      <div className="stage-metrics-grid font-label">
-                        {item.metrics.map((m, mIdx) => (
-                          <div key={mIdx} className="stage-metric-box">
-                            <span className="metric-lbl text-gray">{m.label}</span>
-                            <span className="metric-val">{m.value}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Tech Stack Pills matching .skill-pill */}
-                      <div className="stage-tech-pills font-label">
-                        {item.techStack.map((tech, tIdx) => (
-                          <span key={tIdx} className="stage-pill">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
+                    <div className="timeline-narrative-pane stage-copy">
+                      <h3 className="stage-copy-title uppercase">{item.title}</h3>
+                      <p className="stage-copy-text uppercase">{item.summary}</p>
                     </div>
 
-                    {/* Right Pane: 2D Live Visualizer Canvas */}
+                    {/* The animation slot. Each stage's own canvas sits in it
+                        for now; swapping in something else means changing what
+                        goes here, not the card around it. */}
                     <div className="timeline-simulation-pane">
                       <div className="terminal-canvas-wrapper">
                         <Visualizer isActive={isActive} />
