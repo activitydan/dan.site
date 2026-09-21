@@ -165,8 +165,12 @@ export default function Timeline() {
       {/* Aligned Section Header matching #about, #work, #skills */}
       <div className="timeline-header">
         <div className="gsap-reveal">
+          <div className="timeline-section-kicker font-label">02 / OPERATING SYSTEM</div>
           <MaskedTitle text="Philosophies" />
           <div className="divider" />
+          <p className="timeline-header-intro">
+            The principles behind the way I think, build and ship.
+          </p>
         </div>
         <div className="timeline-header-meta font-label">
           <div className="timeline-meta-pill">
@@ -230,22 +234,52 @@ export default function Timeline() {
                       left, a slot for a 2D or 3D animation on the right. */}
                   <div className="timeline-stage-card hoverable">
                     <div className="timeline-narrative-pane stage-copy">
-                      <h3 className="stage-copy-title uppercase">{item.title}</h3>
-                      <p className="stage-copy-text uppercase">{item.summary}</p>
+                      <div className="stage-copy-topline font-label">
+                        <span className="stage-index">0{idx + 1}</span>
+                        <span className="stage-category">{item.category}</span>
+                        <span className="stage-date">{item.date}</span>
+                      </div>
+                      <div className="stage-title-wrap">
+                        <p className="stage-copy-label font-label">WORKING PRINCIPLE</p>
+                        <h3 className="stage-copy-title">{item.title}</h3>
+                        <p className="stage-headline uppercase">{item.headline}</p>
+                      </div>
+                      <p className="stage-copy-text">{item.summary}</p>
                       {item.closing && (
-                        <p className="stage-copy-closing uppercase">{item.closing}</p>
+                        <p className="stage-copy-closing">“{item.closing}”</p>
                       )}
+                      <div className="stage-data-grid">
+                        {item.metrics.map((metric) => (
+                          <div className="stage-data-point" key={metric.label}>
+                            <span className="stage-data-label font-label">{metric.label}</span>
+                            <span className="stage-data-value">{metric.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="stage-tech-pills" aria-label="Technology stack">
+                        {item.techStack.slice(0, 4).map((tech) => (
+                          <span className="stage-pill" key={tech}>{tech}</span>
+                        ))}
+                      </div>
                     </div>
 
                     {/* The animation slot: footage when the stage carries a
                         video, its own canvas otherwise. */}
                     <div className="timeline-simulation-pane">
+                      <div className="simulation-topbar font-label">
+                        <span><span className="simulation-live-dot" /> LIVE PRINCIPLE</span>
+                        <span>{item.stageLabel}</span>
+                      </div>
                       <div className="terminal-canvas-wrapper">
                         {item.video ? (
                           <StageVideo src={item.video} isActive={isActive} />
                         ) : (
                           <Visualizer isActive={isActive} />
                         )}
+                      </div>
+                      <div className="simulation-caption font-label">
+                        <span>{item.dockLabel}</span>
+                        <span>◌ 0{idx + 1} / 04</span>
                       </div>
                     </div>
                   </div>

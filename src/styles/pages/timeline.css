@@ -22,6 +22,22 @@
   gap: 1.5rem;
 }
 
+.timeline-section-kicker {
+  color: #777777;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.8rem;
+}
+
+.timeline-header-intro {
+  max-width: 28rem;
+  color: #888888;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  margin-top: 0.1rem;
+}
+
 .timeline-header-meta {
   display: flex;
   align-items: center;
@@ -189,7 +205,7 @@
   background: rgba(12, 12, 16, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
-  padding: 2.4rem 2.6rem;
+  padding: 2.1rem 2.25rem;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8),
@@ -219,16 +235,55 @@
   gap: 1.15rem;
 }
 
+.stage-copy-topline {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #777777;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stage-index {
+  color: #ffffff;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+.stage-category {
+  color: #bbbbbb;
+}
+
+.stage-copy-topline .stage-date {
+  margin-left: auto;
+  color: #555555;
+  white-space: nowrap;
+}
+
+.stage-copy-label {
+  color: #666666;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  margin-bottom: 0.65rem;
+}
+
+.stage-title-wrap {
+  margin: 0;
+}
+
 .stage-copy-title {
   color: #ffffff;
   font-size: clamp(1.35rem, 2.1vw, 1.95rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.005em;
+  margin-bottom: 0.55rem;
 }
 
 .stage-copy-text {
-  color: #ffffff;
+  color: #bdbdbd;
   font-size: clamp(0.88rem, 1.05vw, 1.02rem);
   font-weight: 400;
   line-height: 1.6;
@@ -244,6 +299,44 @@
   line-height: 1.35;
   letter-spacing: 0.06em;
   margin-top: 0.35rem;
+}
+
+.stage-data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stage-data-point {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.stage-data-label {
+  color: #626262;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stage-data-value {
+  color: #d5d5d5;
+  font-size: 0.66rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.stage-tech-pills {
+  gap: 0.4rem;
+}
+
+.stage-pill {
+  padding: 0.28rem 0.65rem;
+  font-size: 0.63rem;
 }
 
 /* Footage fills the slot the same way a canvas does: cover, so the frame is
@@ -388,6 +481,40 @@
   -webkit-backdrop-filter: blur(16px);
 }
 
+.simulation-topbar,
+.simulation-caption {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #686868;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  padding: 0.85rem 1rem;
+  background: rgba(5, 5, 8, 0.36);
+}
+
+.simulation-topbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.simulation-caption {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #8b8b8b;
+}
+
+.simulation-live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff;
+  animation: radarPulse 1.8s ease-in-out infinite;
+}
+
 .terminal-canvas-wrapper {
   flex: 1;
   width: 100%;
@@ -464,5 +591,17 @@
   .stage-metrics-grid {
     grid-template-columns: 1fr;
     gap: 0.6rem;
+  }
+
+  .stage-copy-topline .stage-date {
+    display: none;
+  }
+
+  .stage-data-grid {
+    gap: 0.4rem;
+  }
+
+  .stage-data-value {
+    font-size: 0.6rem;
   }
 }
