@@ -219,6 +219,15 @@
   gap: 1.15rem;
 }
 
+.stage-copy-label {
+  align-self: flex-start;
+  padding: 0.38rem 0.62rem;
+  color: #77706b;
+  background: #0b0908;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+}
+
 .stage-copy-title {
   color: #ffffff;
   font-size: clamp(1.35rem, 2.1vw, 1.95rem);

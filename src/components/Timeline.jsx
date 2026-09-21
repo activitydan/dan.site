@@ -229,7 +229,8 @@ export default function Timeline() {
                   {/* The card is two sides and nothing else: words on the
                       left, a slot for a 2D or 3D animation on the right. */}
                   <div className="timeline-stage-card hoverable">
-                    <div className="timeline-narrative-pane stage-copy">
+                    <div className={`timeline-narrative-pane stage-copy ${item.video ? 'stage-copy-boat' : ''}`}>
+                      {item.video && <span className="stage-copy-label font-label">WORKING PRINCIPLE</span>}
                       <h3 className="stage-copy-title uppercase">{item.title}</h3>
                       <p className="stage-copy-text uppercase">{item.summary}</p>
                       {item.closing && (
