@@ -21,6 +21,27 @@
   "registries": {
     "@aceternity": "https://ui.aceternity.com/registry/{name}.json",
     "@cult-ui": "https://cult-ui.com/r/{name}.json",
-    "@motion-primitives": "https://motion-primitives.com/c/{name}.json"
+    "@motion-primitives": "https://motion-primitives.com/c/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}",
+    "@react-bits": "https://reactbits.dev/r/{name}.json",
+    "@animate-ui": "https://animate-ui.com/r/{name}.json",
+    "@atelier": "https://www.atelier-ui.com/r/{name}.json",
+    "@threecn": "https://threecn.dev/r/{name}.json",
+    "@paceui-gsap": "https://gsap.paceui.com/r/{name}.json",
+    "@tween-ui": "https://tween-ui.vercel.app/r/{name}.json",
+    "@skiper-ui": "https://skiper-ui.com/registry/{name}.json",
+    "@kokonutui": "https://kokonutui.com/r/{name}.json",
+    "@eldoraui": "https://eldoraui.site/r/{name}.json",
+    "@nexus-labs": "https://nexus-ui.com/r/{name}.json",
+    "@smoothui": "https://smoothui.dev/r/{name}.json",
+    "@scrollxui": "https://www.scrollxui.dev/registry/{name}.json",
+    "@crafterui": "https://crafterui.com/r/{name}.json",
+    "@bjork-ui": "https://ui.isaiahbjork.com/{name}.json",
+    "@morphiq": "https://morphiq.prathampatel.design/r/{name}.json",
+    "@liquefy-ui": "https://liquefy-ui.com/r/{name}.json",
+    "@mewo": "https://mewo-ui.vercel.app/r/{name}.json",
+    "@awwwardedui": "https://awwwardedui.vercel.app/r/{name}.json",
+    "@ui-layouts": "https://ui-layouts.com/r/{name}.json",
+    "@lucide-animated": "https://lucide-animated.com/r/{name}.json"
   }
 }
