@@ -189,20 +189,16 @@ export default defineConfig({
           // visit, so the old substring matches ('react', 'three', and a
           // catch-all) put any new library there, lazy or not: in a test
           // build, the whole 4 MB Spline runtime.
-          //
-          // Top-level packages only. A nested copy, such as the three 0.170
-          // stats-gl keeps in node_modules/stats-gl/node_modules/three, would
-          // otherwise match 'three' too and be sent to every visitor.
-          const parts = id.split(/[\\/]node_modules[\\/]/);
-          if (parts.length !== 2) {
+          const pkg = id
+            .split(/[\\/]node_modules[\\/]/)
+            .slice(1)
+            .pop()
+            ?.match(/^(@[^\\/]+[\\/])?[^\\/]+/)?.[0];
+          if (!pkg) {
             return;
           }
-          const pkg = parts[1].match(/^(@[^\\/]+[\\/])?[^\\/]+/)?.[0];
-          // Only three's core build. Its add-ons (three/addons, the WebGPU
-          // renderer, TSL) go wherever their importers go: the component
-          // libraries pull in 2 MB of them, which this chunk used to take.
           if (pkg === 'three') {
-            return /[\\/]three[\\/]build[\\/]three\.(core|module)\.js$/.test(id) ? 'vendor-three' : undefined;
+            return 'vendor-three';
           }
           if (pkg === 'gsap') {
             return 'vendor-gsap';

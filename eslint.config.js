@@ -5,10 +5,9 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  // Vendored upstream build of threejs-toys, carrying its own patch, and the
-  // third-party component catalogs in COMPONENTI. Linting someone else's code
-  // only produces noise we would not act on.
-  globalIgnores(['dist', 'src/lib/threejs-toys-patched.js', 'COMPONENTI']),
+  // Vendored upstream build of threejs-toys, carrying its own patch. Linting
+  // someone else's bundle only produces noise we would not act on.
+  globalIgnores(['dist', 'src/lib/threejs-toys-patched.js']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [

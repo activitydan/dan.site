@@ -82,106 +82,41 @@ at hand. Worth picking up during a debug or cleanup pass.
 
 ## Component libraries: installed, not used yet
 
-The owner asked for every animation, 3D and background library on a long list
-to be available for future components. Nothing imports them yet, so none of
-them is in the build. What the site's own first load did change by: React
-19.3 (+29 KB), three's add-ons moving from `vendor-three` into the entry (a
-wash), and the Tailwind animation plugins (+12 KB of CSS, 2.6 KB gzipped).
+The owner asked for these to be available for future components. Nothing
+imports them yet, and the build was byte-identical to the one before they were
+added (bar `class="dark"` on `<html>`).
 
-- **What is in `package.json`.** Animation: `motion` (Framer Motion's current
-  name; import from `motion/react`), `@gsap/react`, `animejs`, React Spring,
-  AutoAnimate, Rive, dotLottie, use-gesture, NumberFlow, mouse-follower,
-  canvas-confetti, Typed.js, react-parallax-tilt, Atropos, Swiper, Embla,
-  react-fast-marquee, react-scroll-parallax, react-vfx, Matter.js.
-  Backgrounds: Paper Shaders, ShaderGradient, Unicorn Studio, use-shader-fx,
-  three-custom-shader-material, OGL, PixiJS + pixi-filters, p5, Cobe,
-  react-globe.gl, gpu-curtains, Vanta, tsParticles. 3D: R3F + drei,
-  postprocessing, rapier, xr, uikit, r3f-scroll-rig, offscreen, Spark, Spline,
-  Theatre.js, model-viewer, Zdog, Babylon (`@babylonjs/core`), PlayCanvas,
-  ecctrl; dev only: leva, r3f-perf, gltfjsx. GSAP's bonus plugins (SplitText,
-  ScrollSmoother, MorphSVG and the rest) need nothing: they ship in `gsap`.
-  Left out as not React: TresJS, Threlte, Vue Bits, Inspira UI.
-- **Three `overrides` in `package.json`, each tested in a browser.**
-  `@theatre/r3f` only declares R3F 8 (an editable mesh and the studio work on
-  9), `@google/model-viewer` only declares three 0.183 (it loads a GLB on
-  0.184), and `r3f-perf` depends on drei 9, which wants React 18 (it only uses
-  drei's `Text`; the panel renders on drei 10). React went to 19.3 because
-  ecctrl asks for 19.2.7 or later; R3F accepts anything below 19.4.
-- **Vanta is abandoned (2022).** Import the default and call `.default` on it,
-  since its UMD build wraps the effect, and pass `THREE`. On three 0.184, 12 of
-  its 14 effects work; `birds` and `dots` throw on init.
-- **Some packages carry their own three.** Unicorn Studio embeds its runtime
-  with three r182 (900 KB, and a "Multiple instances" console warning when it
-  runs next to ours). The XR emulator (`@iwer/*`) and `stats-gl` keep nested
-  copies. The chunk rules below keep all of them out of the first load.
-- **APIs that differ from most examples online.** tsParticles v4 dropped
-  `initParticlesEngine`: wrap the tree in `<ParticlesProvider init={fn}>` with
-  `fn` defined at module level, or it throws. `@p5-wrapper/react` v5 exports
-  `P5Canvas`, not `ReactP5Wrapper`. ecctrl v2 is a named export, `{ Ecctrl }`.
-  Theatre's studio calls updates.theatrejs.com, which the container blocks;
-  harmless.
+- **Packages.** `motion` (Framer Motion's current name; import from
+  `motion/react`), `@react-three/fiber` + `@react-three/drei`,
+  `@splinetool/react-spline` + `@splinetool/runtime`, `@tsparticles/react` +
+  `@tsparticles/engine` + `@tsparticles/slim`, and `clsx` + `tailwind-merge`
+  behind `cn()` in `src/lib/utils.js`. GSAP and three were already here.
+  TresJS was left out: it is Vue.
 - **Tailwind is scoped to `src/components/ui`.** It exists for the copy-paste
   collections, not the site: no preflight, unlayered utilities, and only `ui/`
   is scanned. `src/styles/tailwind.css` says why each of the three matters.
   `dark:` keys off the `dark` class on `<html>`, since the site is always dark.
-  Tailwind's four built-in animations are renamed `tw-spin`, `tw-ping`,
-  `tw-pulse`, `tw-bounce`: under their own names, the first `animate-pulse` in
-  a component replaced the site's `pulse` (the preloader) and `bounce`.
 - **Copy-paste collections come in through the shadcn CLI.** `components.json`
-  registers 24 of them, every URL taken from shadcn's registry directory:
-  `npx shadcn@latest add @magicui/marquee` converts the component to JSX and
-  writes it into `ui/`. Both the `ui` and `components` aliases point there so
-  Tailwind sees everything the CLI writes. The container's network policy
-  blocks those hosts and ui.shadcn.com. Open-source collections publish the
-  same registry JSON on GitHub (Motion Primitives: `public/c/<name>.json`), and
-  `REGISTRY_URL=https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/public/r`
+  registers `@aceternity`, `@cult-ui` and `@motion-primitives`, so
+  `npx shadcn@latest add @aceternity/aurora-background` converts the component
+  to JSX and writes it into `ui/`. Both the `ui` and `components` aliases point
+  there so Tailwind sees everything the CLI writes. The container's network
+  policy blocks those hosts and ui.shadcn.com. Open-source collections publish
+  the same registry JSON on GitHub (Motion Primitives: `public/c/<name>.json`),
+  and `REGISTRY_URL=https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/public/r`
   covers the file the CLI itself fetches.
-- **`manualChunks` names seven top-level packages exactly, on purpose.** Every
-  named chunk loads on the first visit, and under Rolldown a named chunk takes
-  the dependencies of what it matches with it. The old substring rules
-  (`'react'`, `'three'`, a catch-all) shipped any new library up front, lazy or
-  not: a test build put the whole 4 MB Spline runtime there. Two more traps,
-  both hit with every library imported at once: `three` also matched the
-  nested copies above, and three's own add-ons and WebGPU build, until
-  `vendor-three` reached 2.5 MB. So only the top-level
-  `three/build/three.{core,module}.js` is named. Load
-  the heavy libraries behind `React.lazy` and they stay out of the first load.
-- **R3F still costs about 200 KB up front even when lazy.** It imports the
-  whole THREE namespace, and three is one module shared with the butterflies,
-  so `vendor-three` stops being tree-shaken: 544 KB became 746 KB in a test
-  build.
-
-## COMPONENTI: the ready-made component library
-
-The owner asked for every ready-made component (as opposed to code libraries)
-to sit in a folder named `COMPONENTI`. It holds 1,313 components from eight
-MIT catalogs, each in its own subfolder with the catalog's LICENSE, an index
-README (in Italian, like the owner) and the source repo and commit it was
-copied from. `COMPONENTI/README.md` is the entry point.
-
-- **It is a library, not part of the site.** Nothing imports it, Tailwind does
-  not scan it, ESLint ignores it, and the build was byte-identical with and
-  without it. Do not add it to Tailwind's `@source`: every utility in 1,300
-  components would land in the CSS every visitor downloads.
-- **Using one means installing it into `src/components/ui`.** Each component
-  folder has the registry item as `<name>.json`, so
-  `npx shadcn@latest add ./COMPONENTI/<catalog>/<name>/<name>.json` works
-  offline apart from the one file noted above (`REGISTRY_URL`). It converts to
-  JSX, writes into `ui/`, installs missing dependencies and adds the
-  component's keyframes to `src/styles/tailwind.css`; check those names
-  against the site's. Tested with Magic UI's marquee. SmoothUI is the
-  exception: its registry is generated by its site, so its folders hold
-  source only, with the same `@repo/*` import rewrites its site applies.
-- **Deliberately left out.** React Bits and Animate UI are MIT + Commons
-  Clause, which forbids redistributing the components as a collection, and
-  this repository is public; use them one at a time through the CLI.
-  Aceternity does not publish its source. The other thirteen registries in
-  `components.json` have no public repo that could be verified, and their
-  sites are blocked from the container.
-- **Running third-party component code in the container is blocked.** The
-  permission classifier refused a browser check of an installed catalog
-  component as "code from external". The CLI install and the build were
-  checked; the render has to be checked on the owner's machine.
+- **`manualChunks` names seven packages exactly, on purpose.** Every named
+  chunk loads on the first visit, and under Rolldown a named chunk takes the
+  dependencies of what it matches with it. The old substring rules (`'react'`,
+  `'three'`, a catch-all) shipped any new library up front, lazy or not: a test
+  build put the whole 4 MB Spline runtime there. Load the heavy ones (Spline,
+  R3F, particles) behind `React.lazy` and they stay out of the first load.
+- **R3F costs about 200 KB up front even when lazy.** It imports the whole
+  THREE namespace, and three is one module shared with the butterflies, so
+  `vendor-three` stops being tree-shaken: 544 KB became 746 KB in a test build.
+- **tsParticles is v4.** `initParticlesEngine` is gone, and most examples
+  online still use it. Wrap the tree in `<ParticlesProvider init={fn}>`, with
+  `fn` defined at module level: the provider throws if it changes.
 
 ## Checking a change
 

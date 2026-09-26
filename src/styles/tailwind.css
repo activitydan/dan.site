@@ -22,14 +22,6 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' source(none);
 
-/* Animation utilities: tw-animate-css is what shadcn-style components expect
-   for `animate-in`, `fade-in`, `slide-in-from-*`; tailwindcss-motion adds the
-   `motion-*` presets. Like every other utility they are only generated for
-   classes found in ui/. tw-animate-css does always emit its `@property`
-   declarations, about 1 KB, all named `--tw-*`. */
-@import 'tw-animate-css';
-@plugin 'tailwindcss-motion';
-
 /* These components are light by default with `dark:` overrides. The site is
    dark whatever the OS says, so `dark:` keys off the `dark` class that
    index.html puts on <html> rather than off prefers-color-scheme. The shadcn
@@ -37,49 +29,3 @@
 @custom-variant dark (&:is(.dark *));
 
 @source '../components/ui';
-
-/* Keyframe names are global, and Tailwind writes the keyframes of its four
-   built-in animations after the site's CSS the moment a component uses one.
-   The site has its own `pulse` (the preloader) and `bounce`, so
-   `animate-pulse` in a ui/ component used to replace them. Same animations,
-   renamed. A component the CLI adds with keyframes of its own needs the same
-   check against the names in src/styles. */
-@theme {
-  --animate-spin: tw-spin 1s linear infinite;
-  --animate-ping: tw-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-  --animate-pulse: tw-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-bounce: tw-bounce 1s infinite;
-
-  @keyframes tw-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes tw-ping {
-    75%,
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
-  }
-
-  @keyframes tw-pulse {
-    50% {
-      opacity: 0.5;
-    }
-  }
-
-  @keyframes tw-bounce {
-    0%,
-    100% {
-      transform: translateY(-25%);
-      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-    }
-
-    50% {
-      transform: none;
-      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    }
-  }
-}
