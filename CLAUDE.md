@@ -80,6 +80,44 @@ at hand. Worth picking up during a debug or cleanup pass.
   context outlive the component, and StrictMode's double mount leaves two.
   Re-vendoring from upstream would silently drop both.
 
+## Component libraries: installed, not used yet
+
+The owner asked for these to be available for future components. Nothing
+imports them yet, and the build was byte-identical to the one before they were
+added (bar `class="dark"` on `<html>`).
+
+- **Packages.** `motion` (Framer Motion's current name; import from
+  `motion/react`), `@react-three/fiber` + `@react-three/drei`,
+  `@splinetool/react-spline` + `@splinetool/runtime`, `@tsparticles/react` +
+  `@tsparticles/engine` + `@tsparticles/slim`, and `clsx` + `tailwind-merge`
+  behind `cn()` in `src/lib/utils.js`. GSAP and three were already here.
+  TresJS was left out: it is Vue.
+- **Tailwind is scoped to `src/components/ui`.** It exists for the copy-paste
+  collections, not the site: no preflight, unlayered utilities, and only `ui/`
+  is scanned. `src/styles/tailwind.css` says why each of the three matters.
+  `dark:` keys off the `dark` class on `<html>`, since the site is always dark.
+- **Copy-paste collections come in through the shadcn CLI.** `components.json`
+  registers `@aceternity`, `@cult-ui` and `@motion-primitives`, so
+  `npx shadcn@latest add @aceternity/aurora-background` converts the component
+  to JSX and writes it into `ui/`. Both the `ui` and `components` aliases point
+  there so Tailwind sees everything the CLI writes. The container's network
+  policy blocks those hosts and ui.shadcn.com. Open-source collections publish
+  the same registry JSON on GitHub (Motion Primitives: `public/c/<name>.json`),
+  and `REGISTRY_URL=https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/public/r`
+  covers the file the CLI itself fetches.
+- **`manualChunks` names seven packages exactly, on purpose.** Every named
+  chunk loads on the first visit, and under Rolldown a named chunk takes the
+  dependencies of what it matches with it. The old substring rules (`'react'`,
+  `'three'`, a catch-all) shipped any new library up front, lazy or not: a test
+  build put the whole 4 MB Spline runtime there. Load the heavy ones (Spline,
+  R3F, particles) behind `React.lazy` and they stay out of the first load.
+- **R3F costs about 200 KB up front even when lazy.** It imports the whole
+  THREE namespace, and three is one module shared with the butterflies, so
+  `vendor-three` stops being tree-shaken: 544 KB became 746 KB in a test build.
+- **tsParticles is v4.** `initParticlesEngine` is gone, and most examples
+  online still use it. Wrap the tree in `<ParticlesProvider init={fn}>`, with
+  `fn` defined at module level: the provider throws if it changes.
+
 ## Checking a change
 
 There are no tests. What this repo has instead:

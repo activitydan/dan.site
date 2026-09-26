@@ -1,5 +1,7 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { cloudflare } from '@cloudflare/vite-plugin';
 
 function devEmailApiPlugin() {
@@ -164,26 +166,50 @@ function devEmailApiPlugin() {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), cloudflare(), devEmailApiPlugin()],
+  plugins: [react(), tailwindcss(), cloudflare(), devEmailApiPlugin()],
+  resolve: {
+    // `@/lib/utils`, `@/components/ui/...`: the import paths copy-paste
+    // components are published with. jsconfig.json mirrors it for editors
+    // and the shadcn CLI.
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   build: {
     cssMinify: 'esbuild',
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('three')) {
-              return 'vendor-three';
-            }
-            if (id.includes('gsap')) {
-              return 'vendor-gsap';
-            }
-            if (id.includes('lenis')) {
-              return 'vendor-lenis';
-            }
-            if (id.includes('react-router-dom') || id.includes('react-dom') || id.includes('react')) {
-              return 'vendor-react';
-            }
+          // Named chunks only for the packages the site itself loads, by exact
+          // package name. Everything else, including the libraries installed
+          // for components, is left to the bundler's own splitting. Under
+          // Rolldown a named chunk also takes in the dependencies of what it
+          // matches, and every one of these chunks is loaded on the first
+          // visit, so the old substring matches ('react', 'three', and a
+          // catch-all) put any new library there, lazy or not: in a test
+          // build, the whole 4 MB Spline runtime.
+          const pkg = id
+            .split(/[\\/]node_modules[\\/]/)
+            .slice(1)
+            .pop()
+            ?.match(/^(@[^\\/]+[\\/])?[^\\/]+/)?.[0];
+          if (!pkg) {
+            return;
+          }
+          if (pkg === 'three') {
+            return 'vendor-three';
+          }
+          if (pkg === 'gsap') {
+            return 'vendor-gsap';
+          }
+          if (pkg === 'lenis') {
+            return 'vendor-lenis';
+          }
+          if (['react', 'react-dom', 'react-router', 'react-router-dom', 'lucide-react'].includes(pkg)) {
+            return 'vendor-react';
+          }
+          if (pkg === 'scheduler') {
             return 'vendor-libs';
           }
         },

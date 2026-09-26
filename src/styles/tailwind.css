@@ -1,0 +1,31 @@
+/* ==========================================================================
+   Tailwind, for the copy-paste component collections only
+   (Aceternity UI, Cult UI, Motion Primitives and similar)
+   ========================================================================== */
+
+/* The site itself is plain CSS. Tailwind is here so components pulled from
+   those collections work as published, and it is kept out of the site's way
+   in three ways:
+
+   - No preflight. Its reset would restyle every heading, list and button on
+     the site. tokens.css already does the part of it that matters.
+   - Utilities are unlayered. tokens.css resets margin and padding on `*`
+     outside any layer, and an unlayered rule beats every layered one, so
+     layered utilities would lose `p-4` or `m-2` to that reset. Unlayered,
+     they win on specificity as they do in a normal Tailwind project.
+   - Only src/components/ui is scanned. The rest of src is full of words
+     Tailwind reads as utilities (transform, filter, blur, border, shadow,
+     transition), and scanning it emits rules for all of them. A utility
+     used outside ui/ is not generated; put the component, or a wrapper
+     around it, in ui/. */
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' source(none);
+
+/* These components are light by default with `dark:` overrides. The site is
+   dark whatever the OS says, so `dark:` keys off the `dark` class that
+   index.html puts on <html> rather than off prefers-color-scheme. The shadcn
+   CLI writes this same line when it is missing. */
+@custom-variant dark (&:is(.dark *));
+
+@source '../components/ui';
