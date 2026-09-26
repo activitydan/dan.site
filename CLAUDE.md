@@ -103,3 +103,18 @@ STREAMS, so its picture cannot be checked there. The bundled ffmpeg under
 `/opt/pw-browsers/ffmpeg-1011` cannot decode it either; it is built for webm
 only. Everything around the video still can be: the element, its attributes,
 the box it fills, and that the file is served.
+
+## MCP servers
+
+`.mcp.json` registers three stdio servers, pre-approved in
+`.claude/settings.json`: `context7` (library docs), `browser` (Puppeteer) and
+`thinking` (sequential thinking). They load at session start, not mid-session.
+
+- **`browser` needs `DOCKER_CONTAINER=true`.** Without it the server launches a
+  headed Chrome, and as root Chromium refuses to start without `--no-sandbox`.
+  The flag switches it to headless with the sandbox off. It drives Puppeteer's
+  own Chrome 131, downloaded on first run, not `/opt/pw-browsers`. The package
+  is deprecated upstream but still works.
+- **There is no Figma entry on purpose.** `npx @composio/mcp setup figma` is a
+  deprecated one-shot installer, not a server: it writes a broken entry into
+  Claude Desktop's config and exits. Figma comes from the claude.ai connector.
